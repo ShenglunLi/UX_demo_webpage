@@ -1,53 +1,544 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UX 原則互動示範｜UX 回饋示範</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UX 原則互動示範｜狀態、控制與錯誤協助</title>
+  <link rel="shortcut icon" href="favicon.png">
   <style>
-    :root {--bg:#f6f7fb;--surface:#fff;--text:#1f2937;--muted:#6b7280;--line:#dfe3ea;--primary:#3157d5;--primary-dark:#2444aa;--danger:#c62828;--danger-bg:#fff4f4;--success:#19733b;--success-bg:#effaf3;--focus:rgba(49,87,213,.2);--radius:14px;--shadow:0 12px 30px rgba(30,41,59,.08)}
-    *{box-sizing:border-box} body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;color:var(--text);background:var(--bg);line-height:1.65}
-    .site-header{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.header-inner,.container{width:min(1080px,calc(100% - 32px));margin:0 auto}.header-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:800}.header-note{color:var(--muted);font-size:.9rem}
-    main{padding:48px 0 72px}.hero{margin-bottom:28px}.eyebrow{margin:0 0 8px;font-size:.9rem;font-weight:700;color:var(--primary);letter-spacing:.08em;text-transform:uppercase}h1,h2,h3{line-height:1.3}h1{margin:0 0 12px;font-size:clamp(2rem,5vw,3.2rem)}.hero p{margin:0;color:var(--muted);font-size:1.05rem}
-    .progress{margin:28px 0;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.step{padding:14px 16px;border-radius:12px;background:#e9edf7;color:#566078;font-size:.95rem;font-weight:700}.step.active{background:var(--primary);color:#fff}
-    .layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);gap:28px;align-items:start}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.form-card{padding:28px}.form-card h2{margin-top:0}.field{margin-bottom:20px}label{display:inline-block;margin-bottom:7px;font-weight:700}.required{color:var(--danger);margin-left:4px}
-    input,select,textarea{width:100%;padding:12px 14px;border:1px solid #bfc7d4;border-radius:10px;background:#fff;color:var(--text);font:inherit;transition:border-color .2s,box-shadow .2s}textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px var(--focus)}.hint{margin:6px 0 0;color:var(--muted);font-size:.9rem}.error-text{display:none;margin:7px 0 0;color:var(--danger);font-size:.9rem;font-weight:700}.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--danger);background:var(--danger-bg)}.field.invalid .error-text{display:block}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}button{border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:800;cursor:pointer;transition:transform .15s,background .2s,opacity .2s}button:active{transform:translateY(1px)}.primary{min-width:150px;color:#fff;background:var(--primary)}.primary:hover{background:var(--primary-dark)}.secondary{background:#edf0f6;color:var(--text)}button:disabled{cursor:wait;opacity:.72}
-    .status{display:none;margin:22px 0 0;padding:14px 16px;border-radius:10px;font-weight:700}.status.show{display:block}.status.processing{color:#4b5563;background:#f1f3f7}.status.success{color:var(--success);background:var(--success-bg);border:1px solid #bce6ca}.status.error{color:var(--danger);background:var(--danger-bg);border:1px solid #f1c0c0}
-    .side-card{padding:24px;position:sticky;top:94px}.side-card h3{margin-top:0}.principle{padding:14px 0;border-top:1px solid var(--line)}.principle:first-of-type{border-top:0;padding-top:0}.principle strong{display:block;margin-bottom:4px}.principle span{color:var(--muted);font-size:.95rem}.teaching-note{margin-top:28px;padding:22px 24px;border-left:5px solid var(--primary);background:#eef2ff;border-radius:10px}.teaching-note h2{margin-top:0;font-size:1.2rem}.teaching-note ol{margin-bottom:0;padding-left:1.25rem}
-    @media(max-width:820px){.layout{grid-template-columns:1fr}.side-card{position:static}.progress{grid-template-columns:1fr}.header-note{display:none}}@media(max-width:560px){.header-inner,.container{width:min(100% - 22px,1080px)}main{padding-top:28px}.form-card,.side-card{padding:20px}.actions{flex-direction:column}.actions button{width:100%}}
+    :root{
+      --bg:#f4f6f9;
+      --surface:#ffffff;
+      --text:#1f2937;
+      --muted:#667085;
+      --line:#dfe4ea;
+      --primary:#2f5bd3;
+      --primary-dark:#2347aa;
+      --danger:#c62828;
+      --danger-bg:#fff3f3;
+      --success:#176b3a;
+      --success-bg:#eef9f2;
+      --warning:#8a5a00;
+      --warning-bg:#fff8e7;
+      --radius:14px;
+      --shadow:0 10px 28px rgba(30,41,59,.08);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.65;
+    }
+
+    button,input,select,textarea{font:inherit}
+
+    .site-header{
+      background:var(--surface);
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .header-inner,.container{
+      width:min(1100px,calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .header-inner{
+      min-height:68px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand{font-weight:800}
+    .header-note{color:var(--muted);font-size:.9rem}
+
+    main{padding:44px 0 72px}
+    .hero{margin-bottom:28px}
+
+    .eyebrow{
+      margin:0 0 8px;
+      color:var(--primary);
+      font-weight:800;
+      letter-spacing:.08em;
+      font-size:.9rem;
+    }
+
+    h1,h2,h3{line-height:1.3}
+    h1{font-size:clamp(2rem,5vw,3.1rem);margin:0 0 12px}
+    .hero p{max-width:780px;margin:0;color:var(--muted)}
+
+    .core-message{
+      margin:24px 0 30px;
+      padding:18px 20px;
+      border-left:5px solid var(--primary);
+      background:#eef3ff;
+      border-radius:10px;
+      font-weight:800;
+      font-size:1.08rem;
+    }
+
+    .principles{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin:0 0 32px;
+    }
+
+    .principle-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .principle-card strong{
+      display:block;
+      margin-bottom:7px;
+    }
+
+    .principle-card span{
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .progress{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-bottom:24px;
+    }
+
+    .step{
+      padding:13px 15px;
+      border-radius:10px;
+      background:#e9edf7;
+      color:#566078;
+      font-weight:800;
+      font-size:.95rem;
+    }
+
+    .step.active{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    .demo{
+      display:grid;
+      grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);
+      gap:26px;
+      align-items:start;
+    }
+
+    .panel{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .form-panel{padding:28px}
+    .side-panel{padding:24px;position:sticky;top:92px}
+
+    .section-title{margin:0 0 6px}
+    .section-desc{margin:0 0 22px;color:var(--muted)}
+
+    .field{margin-bottom:20px}
+
+    label{
+      display:block;
+      margin-bottom:7px;
+      font-weight:700;
+    }
+
+    .required{color:var(--danger)}
+
+    input,select,textarea{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #bdc7d5;
+      border-radius:10px;
+      background:white;
+      color:var(--text);
+    }
+
+    textarea{
+      min-height:110px;
+      resize:vertical;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 4px rgba(47,91,211,.16);
+    }
+
+    .hint{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .error{
+      display:none;
+      margin:7px 0 0;
+      color:var(--danger);
+      font-size:.9rem;
+      font-weight:700;
+    }
+
+    .field.invalid input,
+    .field.invalid select,
+    .field.invalid textarea{
+      border-color:var(--danger);
+      background:var(--danger-bg);
+    }
+
+    .field.invalid .error{display:block}
+
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:28px;
+    }
+
+    .actions button{
+      border:0;
+      border-radius:10px;
+      padding:12px 18px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .primary{background:var(--primary);color:white}
+    .primary:hover{background:var(--primary-dark)}
+    .secondary{background:#edf1f6;color:var(--text)}
+
+    button:disabled{
+      opacity:.7;
+      cursor:wait;
+    }
+
+    .status{
+      display:none;
+      margin-top:20px;
+      padding:14px 16px;
+      border-radius:10px;
+      font-weight:700;
+    }
+
+    .status.show{display:block}
+    .status.processing{
+      background:#f1f3f7;
+      color:#4b5563;
+      border:1px solid #d8dde6;
+    }
+    .status.success{
+      background:var(--success-bg);
+      color:var(--success);
+      border:1px solid #bee3ca;
+    }
+    .status.error{
+      background:var(--danger-bg);
+      color:var(--danger);
+      border:1px solid #f0c2c2;
+    }
+
+    .check-item{
+      padding:14px 0;
+      border-top:1px solid var(--line);
+    }
+
+    .check-item:first-of-type{border-top:0;padding-top:0}
+    .check-item strong{display:block;margin-bottom:5px}
+    .check-item span{color:var(--muted);font-size:.94rem}
+
+    .teaching-box{
+      margin-top:28px;
+      background:#eef3ff;
+      border-left:5px solid var(--primary);
+      border-radius:10px;
+      padding:22px 24px;
+    }
+
+    .teaching-box h2{margin-top:0;font-size:1.2rem}
+    .teaching-box ol{margin-bottom:0;padding-left:1.25rem}
+
+    @media(max-width:840px){
+      .principles,.demo{grid-template-columns:1fr}
+      .side-panel{position:static}
+    }
+
+    @media(max-width:560px){
+      .header-inner,.container{width:min(100% - 22px,1100px)}
+      .form-panel,.side-panel{padding:20px}
+      .actions{flex-direction:column}
+      .actions button{width:100%}
+      .header-note{display:none}
+      .progress{grid-template-columns:1fr}
+    }
   </style>
 </head>
+
 <body>
-  <header class="site-header"><div class="header-inner"><div class="brand">TMDA 跨領域學院</div><div class="header-note">UX 教學示範頁</div></div></header>
-  <main><div class="container">
-    <section class="hero" aria-labelledby="page-title"><p class="eyebrow">課程報名</p><h1 id="page-title">AI 輔助網頁設計入門</h1><p>請填寫以下資料完成報名。本頁用來示範「狀態可見、使用者控制、錯誤協助」三項易用性原則。</p></section>
-    <div class="progress" aria-label="報名進度"><div class="step active">1. 填寫資料</div><div class="step">2. 完成報名</div></div>
-    <div class="layout">
-      <section class="card form-card"><h2>報名資料</h2>
-        <form id="signupForm" novalidate>
-          <div class="field" id="nameField"><label for="name">姓名<span class="required">*</span></label><input id="name" name="name" type="text" autocomplete="name" /><p class="error-text">請輸入姓名。</p></div>
-          <div class="field" id="emailField"><label for="email">電子郵件<span class="required">*</span></label><input id="email" name="email" type="email" autocomplete="email" /><p class="hint">報名確認信將寄送至此信箱。</p><p class="error-text">請輸入有效的電子郵件格式。</p></div>
-          <div class="field" id="phoneField"><label for="phone">手機號碼<span class="required">*</span></label><input id="phone" name="phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" /><p class="hint">請輸入 10 碼手機號碼，例如 0912345678。</p><p class="error-text">手機號碼格式不正確，請輸入 10 碼數字。</p></div>
-          <div class="field" id="identityField"><label for="identity">目前身分<span class="required">*</span></label><select id="identity" name="identity"><option value="">請選擇</option><option value="employee">在職工作者</option><option value="manager">主管或管理者</option><option value="freelancer">自由工作者</option><option value="other">其他</option></select><p class="error-text">請選擇目前身分。</p></div>
-          <div class="field"><label for="expectation">學習期待</label><textarea id="expectation" name="expectation" placeholder="例如：希望學會修改既有網站，並使用 AI 協助除錯。"></textarea></div>
-          <div class="actions"><button class="primary" id="submitButton" type="submit">送出報名</button><button class="secondary" id="resetButton" type="button">清除內容</button></div>
-          <div id="statusMessage" class="status" role="status" aria-live="polite"></div>
-        </form>
-      </section>
-      <aside class="card side-card"><h3>這個頁面示範了什麼？</h3><div class="principle"><strong>狀態可見</strong><span>送出時顯示處理中，完成後顯示成功訊息與下一步。</span></div><div class="principle"><strong>使用者控制</strong><span>使用者可以修改、清除內容；資料錯誤時保留其他已填欄位。</span></div><div class="principle"><strong>錯誤協助</strong><span>明確指出錯誤欄位，並說明如何修正。</span></div></aside>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">TMDA 跨領域學院</div>
+      <div class="header-note">UX 原則互動示範頁</div>
     </div>
-    <section class="teaching-note"><h2>課堂操作建議</h2><ol><li>先故意漏填欄位或輸入錯誤手機號碼。</li><li>觀察錯誤訊息是否指出問題位置與修正方法。</li><li>修正後再次送出，觀察「處理中」與「成功」回饋。</li><li>討論：若沒有這些回饋，使用者可能會產生哪些疑問？</li></ol></section>
-  </div></main>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="hero">
+        <p class="eyebrow">互動教學案例</p>
+        <h1>讓使用者知道發生什麼事，也能掌握下一步</h1>
+        <p>
+          透過課程報名表情境，觀察狀態可見、使用者控制與自由，以及錯誤協助如何降低操作中的不確定感。
+        </p>
+      </section>
+
+      <div class="core-message">
+        好的介面會清楚回應使用者的操作，並在做錯或改變心意時，提供修改、取消與修正的空間。
+      </div>
+
+      <section class="principles">
+        <article class="principle-card">
+          <strong>狀態可見</strong>
+          <span>讓使用者知道系統正在處理、是否完成，以及接下來會發生什麼事。</span>
+        </article>
+
+        <article class="principle-card">
+          <strong>使用者控制與自由</strong>
+          <span>讓使用者可以返回、修改、取消或中止不想繼續的操作。</span>
+        </article>
+
+        <article class="principle-card">
+          <strong>錯誤協助</strong>
+          <span>發生錯誤時，指出問題位置並清楚說明修正方式。</span>
+        </article>
+      </section>
+
+      <section class="demo">
+        <div class="panel form-panel">
+          <div class="progress" aria-label="報名進度">
+            <div class="step active" id="stepForm">1. 填寫資料</div>
+            <div class="step" id="stepDone">2. 完成報名</div>
+          </div>
+
+          <h2 class="section-title">AI 輔助網頁設計入門</h2>
+          <p class="section-desc">請填寫以下資料完成報名。</p>
+
+          <form id="signupForm" novalidate>
+            <div class="field" id="nameField">
+              <label for="name">姓名<span class="required"> *</span></label>
+              <input id="name" name="name" type="text" autocomplete="name">
+              <p class="error">請輸入姓名。</p>
+            </div>
+
+            <div class="field" id="emailField">
+              <label for="email">電子郵件<span class="required"> *</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com">
+              <p class="hint">報名確認信將寄送至此信箱。</p>
+              <p class="error">請輸入有效的電子郵件格式。</p>
+            </div>
+
+            <div class="field" id="phoneField">
+              <label for="phone">手機號碼<span class="required"> *</span></label>
+              <input id="phone" name="phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="0912345678">
+              <p class="hint">請輸入 10 碼手機號碼。</p>
+              <p class="error">手機號碼格式不正確，請輸入 10 碼數字。</p>
+            </div>
+
+            <div class="field" id="identityField">
+              <label for="identity">目前身分<span class="required"> *</span></label>
+              <select id="identity" name="identity">
+                <option value="">請選擇</option>
+                <option value="employee">在職工作者</option>
+                <option value="manager">主管或管理者</option>
+                <option value="freelancer">自由工作者</option>
+                <option value="other">其他</option>
+              </select>
+              <p class="error">請選擇目前身分。</p>
+            </div>
+
+            <div class="field">
+              <label for="expectation">學習期待</label>
+              <textarea id="expectation" name="expectation" placeholder="例如：希望學會修改既有網站，並使用 AI 協助除錯。"></textarea>
+            </div>
+
+            <div class="actions">
+              <button class="primary" id="submitButton" type="submit">送出報名</button>
+              <button class="secondary" id="clearButton" type="button">清除內容</button>
+            </div>
+
+            <div id="statusMessage" class="status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <aside class="panel side-panel">
+          <h3>請觀察三件事</h3>
+
+          <div class="check-item">
+            <strong>操作後有沒有回應？</strong>
+            <span>按下送出後，系統是否顯示處理中與完成結果。</span>
+          </div>
+
+          <div class="check-item">
+            <strong>做錯時能不能修正？</strong>
+            <span>錯誤欄位是否被指出，其他已填內容是否保留。</span>
+          </div>
+
+          <div class="check-item">
+            <strong>改變心意時能不能取消？</strong>
+            <span>清除內容前是否先確認，避免誤觸造成資料消失。</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="teaching-box">
+        <h2>課堂操作建議</h2>
+        <ol>
+          <li>先故意漏填姓名，或輸入錯誤手機號碼後送出。</li>
+          <li>觀察錯誤訊息是否指出問題位置與修正方式。</li>
+          <li>修正後再次送出，觀察「送出中」與「報名成功」的狀態變化。</li>
+          <li>按下「清除內容」，觀察確認訊息如何避免誤操作。</li>
+          <li>討論：若沒有這些回饋，使用者可能會產生哪些疑問？</li>
+        </ol>
+      </section>
+    </div>
+  </main>
+
   <script>
-    const form=document.getElementById('signupForm');const submitButton=document.getElementById('submitButton');const resetButton=document.getElementById('resetButton');const statusMessage=document.getElementById('statusMessage');
-    const fields={name:{input:document.getElementById('name'),wrapper:document.getElementById('nameField'),validate:v=>v.trim().length>0},email:{input:document.getElementById('email'),wrapper:document.getElementById('emailField'),validate:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())},phone:{input:document.getElementById('phone'),wrapper:document.getElementById('phoneField'),validate:v=>/^09\d{8}$/.test(v.trim())},identity:{input:document.getElementById('identity'),wrapper:document.getElementById('identityField'),validate:v=>v!==''}};
-    function setFieldState(field,isValid){field.wrapper.classList.toggle('invalid',!isValid);field.input.setAttribute('aria-invalid',String(!isValid))}
-    function validateForm(){let firstInvalid=null;let isFormValid=true;Object.values(fields).forEach(field=>{const isValid=field.validate(field.input.value);setFieldState(field,isValid);if(!isValid&&!firstInvalid)firstInvalid=field.input;if(!isValid)isFormValid=false});if(firstInvalid)firstInvalid.focus();return isFormValid}
-    function showStatus(type,message){statusMessage.className=`status show ${type}`;statusMessage.textContent=message}
-    Object.values(fields).forEach(field=>{['input','change'].forEach(evt=>field.input.addEventListener(evt,()=>{if(field.wrapper.classList.contains('invalid'))setFieldState(field,field.validate(field.input.value))}))});
-    form.addEventListener('submit',event=>{event.preventDefault();statusMessage.className='status';statusMessage.textContent='';if(!validateForm()){showStatus('error','部分資料尚未完成，請依欄位提示修正後再送出。');return}submitButton.disabled=true;submitButton.textContent='送出中…';showStatus('processing','系統正在處理報名資料，請稍候。');setTimeout(()=>{submitButton.disabled=false;submitButton.textContent='送出報名';showStatus('success',`報名成功！確認信已寄至 ${fields.email.input.value.trim()}。請至信箱確認後續資訊。`);document.querySelectorAll('.step').forEach((step,index)=>step.classList.toggle('active',index===2))},1200)});
-    resetButton.addEventListener('click',()=>{const confirmed=window.confirm('確定要清除目前已填寫的內容嗎？');if(!confirmed)return;form.reset();Object.values(fields).forEach(field=>setFieldState(field,true));statusMessage.className='status';statusMessage.textContent='';document.querySelectorAll('.step').forEach((step,index)=>step.classList.toggle('active',index===0));fields.name.input.focus()});
+    const form = document.getElementById("signupForm");
+    const submitButton = document.getElementById("submitButton");
+    const clearButton = document.getElementById("clearButton");
+    const statusMessage = document.getElementById("statusMessage");
+    const stepForm = document.getElementById("stepForm");
+    const stepDone = document.getElementById("stepDone");
+
+    const fields = {
+      name: {
+        input: document.getElementById("name"),
+        wrapper: document.getElementById("nameField"),
+        validate: value => value.trim().length > 0
+      },
+      email: {
+        input: document.getElementById("email"),
+        wrapper: document.getElementById("emailField"),
+        validate: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+      },
+      phone: {
+        input: document.getElementById("phone"),
+        wrapper: document.getElementById("phoneField"),
+        validate: value => /^09\d{8}$/.test(value.trim())
+      },
+      identity: {
+        input: document.getElementById("identity"),
+        wrapper: document.getElementById("identityField"),
+        validate: value => value !== ""
+      }
+    };
+
+    function setFieldState(field, isValid) {
+      field.wrapper.classList.toggle("invalid", !isValid);
+      field.input.setAttribute("aria-invalid", String(!isValid));
+    }
+
+    function validateForm() {
+      let firstInvalid = null;
+      let valid = true;
+
+      Object.values(fields).forEach(field => {
+        const isValid = field.validate(field.input.value);
+        setFieldState(field, isValid);
+
+        if (!isValid && !firstInvalid) {
+          firstInvalid = field.input;
+        }
+
+        if (!isValid) {
+          valid = false;
+        }
+      });
+
+      if (firstInvalid) {
+        firstInvalid.focus();
+      }
+
+      return valid;
+    }
+
+    function showStatus(type, message) {
+      statusMessage.className = `status show ${type}`;
+      statusMessage.textContent = message;
+    }
+
+    function hideStatus() {
+      statusMessage.className = "status";
+      statusMessage.textContent = "";
+    }
+
+    function resetProgress() {
+      stepForm.classList.add("active");
+      stepDone.classList.remove("active");
+    }
+
+    Object.values(fields).forEach(field => {
+      ["input", "change"].forEach(eventName => {
+        field.input.addEventListener(eventName, () => {
+          if (field.wrapper.classList.contains("invalid")) {
+            setFieldState(field, field.validate(field.input.value));
+          }
+        });
+      });
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      hideStatus();
+
+      if (!validateForm()) {
+        showStatus("error", "部分資料尚未完成，請依欄位提示修正後再送出。");
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "送出中…";
+      showStatus("processing", "系統正在處理報名資料，請稍候。");
+
+      window.setTimeout(() => {
+        submitButton.disabled = false;
+        submitButton.textContent = "送出報名";
+        stepForm.classList.remove("active");
+        stepDone.classList.add("active");
+
+        showStatus(
+          "success",
+          `報名成功！確認信已寄至 ${fields.email.input.value.trim()}，請至信箱查看後續資訊。`
+        );
+      }, 1200);
+    });
+
+    clearButton.addEventListener("click", () => {
+      const confirmed = window.confirm("確定要清除目前已填寫的內容嗎？");
+      if (!confirmed) return;
+
+      form.reset();
+      Object.values(fields).forEach(field => setFieldState(field, true));
+      hideStatus();
+      resetProgress();
+      fields.name.input.focus();
+    });
   </script>
 </body>
 </html>
