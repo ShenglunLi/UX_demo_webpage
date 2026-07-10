@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UX 原則互動示範｜讓使用者更容易完成任務</title>
+  <link rel="shortcut icon" href="favicon.png">
+  <style>
+    :root{
+      --bg:#f4f6f9;
+      --surface:#ffffff;
+      --text:#1f2937;
+      --muted:#667085;
+      --line:#dfe4ea;
+      --primary:#2f5bd3;
+      --primary-dark:#2347aa;
+      --danger:#c62828;
+      --danger-bg:#fff3f3;
+      --success:#176b3a;
+      --success-bg:#eef9f2;
+      --warning:#8a5a00;
+      --warning-bg:#fff8e7;
+      --radius:14px;
+      --shadow:0 10px 28px rgba(30,41,59,.08);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.65;
+    }
+
+    button,input,select,textarea{font:inherit}
+
+    .site-header{
+      background:var(--surface);
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .header-inner,.container{
+      width:min(1100px,calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .header-inner{
+      min-height:68px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand{font-weight:800}
+    .header-note{color:var(--muted);font-size:.9rem}
+
+    main{padding:44px 0 72px}
+    .hero{margin-bottom:28px}
+
+    .eyebrow{
+      margin:0 0 8px;
+      color:var(--primary);
+      font-weight:800;
+      letter-spacing:.08em;
+      font-size:.9rem;
+    }
+
+    h1,h2,h3{line-height:1.3}
+    h1{font-size:clamp(2rem,5vw,3.1rem);margin:0 0 12px}
+    .hero p{max-width:780px;margin:0;color:var(--muted)}
+
+    .core-message{
+      margin:24px 0 30px;
+      padding:18px 20px;
+      border-left:5px solid var(--primary);
+      background:#eef3ff;
+      border-radius:10px;
+      font-weight:800;
+      font-size:1.08rem;
+    }
+
+    .principles{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+      margin:0 0 32px;
+    }
+
+    .principle-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .principle-card strong{
+      display:block;
+      margin-bottom:7px;
+    }
+
+    .principle-card span{
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .demo{
+      display:grid;
+      grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);
+      gap:26px;
+      align-items:start;
+    }
+
+    .panel{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .form-panel{padding:28px}
+    .side-panel{padding:24px;position:sticky;top:92px}
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:24px;
+    }
+
+    .toolbar button{
+      border:1px solid var(--line);
+      background:#f8fafc;
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .toolbar button.active{
+      background:var(--primary);
+      color:white;
+      border-color:var(--primary);
+    }
+
+    .section-title{margin:0 0 6px}
+    .section-desc{margin:0 0 22px;color:var(--muted)}
+
+    .task-summary{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:0 0 22px;
+    }
+
+    .summary-item{
+      background:#f8fafc;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:.92rem;
+    }
+
+    .summary-item strong{
+      display:block;
+      margin-bottom:2px;
+    }
+
+    .summary-item span{color:var(--muted)}
+
+    .bad-clutter{
+      display:none;
+      background:var(--warning-bg);
+      color:var(--warning);
+      border:1px solid #f1d89b;
+      padding:12px 14px;
+      border-radius:10px;
+      margin-bottom:18px;
+    }
+
+    .bad-info-wall{
+      display:none;
+      border:1px solid #f1d89b;
+      background:#fffdf4;
+      border-radius:12px;
+      padding:14px;
+      margin-bottom:18px;
+      color:#7a4d00;
+    }
+
+    .bad-info-wall p{margin:0 0 8px}
+    .bad-info-wall ul{margin:0;padding-left:1.2rem}
+
+    .field{margin-bottom:20px}
+
+    label{
+      display:block;
+      margin-bottom:7px;
+      font-weight:700;
+    }
+
+    .required{color:var(--danger)}
+
+    input,select,textarea{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #bdc7d5;
+      border-radius:10px;
+      background:white;
+      color:var(--text);
+    }
+
+    textarea{
+      min-height:96px;
+      resize:vertical;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 4px rgba(47,91,211,.16);
+    }
+
+    .hint{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .error{
+      display:none;
+      margin:7px 0 0;
+      color:var(--danger);
+      font-size:.9rem;
+      font-weight:700;
+    }
+
+    .field.invalid input,
+    .field.invalid select,
+    .field.invalid textarea{
+      border-color:var(--danger);
+      background:var(--danger-bg);
+    }
+
+    .field.invalid .error{display:block}
+
+    .chip-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .chip{
+      border:1px solid #ccd4e0;
+      background:#f8fafc;
+      color:#344054;
+      border-radius:999px;
+      padding:8px 12px;
+      cursor:pointer;
+    }
+
+    .chip:hover{border-color:var(--primary)}
+    .chip.selected{
+      background:#eaf0ff;
+      border-color:var(--primary);
+      color:var(--primary-dark);
+      font-weight:700;
+    }
+
+    .quick-actions{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .quick-button{
+      border:1px solid #ccd4e0;
+      background:#f8fafc;
+      border-radius:12px;
+      padding:11px 12px;
+      cursor:pointer;
+      text-align:left;
+      font-weight:700;
+      color:#344054;
+    }
+
+    .quick-button span{
+      display:block;
+      margin-top:2px;
+      color:var(--muted);
+      font-size:.84rem;
+      font-weight:400;
+    }
+
+    .quick-button:hover{border-color:var(--primary)}
+    .quick-button.selected{
+      background:#eaf0ff;
+      border-color:var(--primary);
+      color:var(--primary-dark);
+    }
+
+    .help-box{
+      margin-top:14px;
+      border:1px solid #ccd4e0;
+      border-radius:12px;
+      background:#f8fafc;
+      overflow:hidden;
+    }
+
+    .help-toggle{
+      width:100%;
+      border:0;
+      background:transparent;
+      padding:12px 14px;
+      text-align:left;
+      font-weight:800;
+      cursor:pointer;
+      color:#344054;
+    }
+
+    .help-content{
+      display:none;
+      padding:0 14px 14px;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .help-box.open .help-content{display:block}
+
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:28px;
+    }
+
+    .actions button{
+      border:0;
+      border-radius:10px;
+      padding:12px 18px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .primary{background:var(--primary);color:white}
+    .primary:hover{background:var(--primary-dark)}
+    .secondary{background:#edf1f6;color:var(--text)}
+
+    .status{
+      display:none;
+      margin-top:20px;
+      padding:14px 16px;
+      border-radius:10px;
+      font-weight:700;
+    }
+
+    .status.show{display:block}
+    .status.success{
+      background:var(--success-bg);
+      color:var(--success);
+      border:1px solid #bee3ca;
+    }
+    .status.error{
+      background:var(--danger-bg);
+      color:var(--danger);
+      border:1px solid #f0c2c2;
+    }
+
+    .check-item{
+      padding:14px 0;
+      border-top:1px solid var(--line);
+    }
+
+    .check-item:first-of-type{border-top:0;padding-top:0}
+    .check-item strong{display:block;margin-bottom:5px}
+    .check-item span{color:var(--muted);font-size:.94rem}
+
+    .teaching-box{
+      margin-top:28px;
+      background:#eef3ff;
+      border-left:5px solid var(--primary);
+      border-radius:10px;
+      padding:22px 24px;
+    }
+
+    .teaching-box h2{margin-top:0;font-size:1.2rem}
+    .teaching-box ol{margin-bottom:0;padding-left:1.25rem}
+
+    .bad-mode #quickField,
+    .bad-mode .quick-actions,
+    .bad-mode .help-box,
+    .bad-mode .task-summary{
+      display:none !important;
+    }
+
+    .bad-mode .bad-clutter,
+    .bad-mode .bad-info-wall{
+      display:block;
+    }
+
+    .bad-mode .form-panel{
+      background:#fffefa;
+    }
+
+    .bad-mode .actions button{
+      border-radius:2px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+
+    @media(max-width:980px){
+      .principles{grid-template-columns:repeat(2,1fr)}
+      .quick-actions,.task-summary{grid-template-columns:1fr}
+    }
+
+    @media(max-width:840px){
+      .demo{grid-template-columns:1fr}
+      .side-panel{position:static}
+    }
+
+    @media(max-width:560px){
+      .header-inner,.container{width:min(100% - 22px,1100px)}
+      .form-panel,.side-panel{padding:20px}
+      .actions{flex-direction:column}
+      .actions button{width:100%}
+      .header-note{display:none}
+      .principles{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">TMDA 跨領域學院</div>
+      <div class="header-note">UX 原則互動示範頁</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" id="page">
+      <section class="hero">
+        <p class="eyebrow">互動教學案例</p>
+        <h1>讓使用者更容易完成任務</h1>
+        <p>
+          透過「預約課程諮詢」情境，比較良好設計與問題設計如何影響使用者完成任務的速度、正確性與理解負擔。
+        </p>
+      </section>
+
+      <div class="core-message">
+        好的介面會在事前降低錯誤，讓熟悉者更快操作，保留必要資訊，並在需要時提供協助。
+      </div>
+
+      <section class="principles">
+        <article class="principle-card">
+          <strong>預防錯誤</strong>
+          <span>事前避免使用者填錯、選錯或點錯，而不是等送出後才提醒。</span>
+        </article>
+
+        <article class="principle-card">
+          <strong>彈性與效率</strong>
+          <span>新手可以照步驟完成，熟悉者可以用快速選項縮短操作。</span>
+        </article>
+
+        <article class="principle-card">
+          <strong>簡潔美感</strong>
+          <span>畫面保留任務所需資訊，不把所有細節同時塞進頁面。</span>
+        </article>
+
+        <article class="principle-card">
+          <strong>說明與支援</strong>
+          <span>必要時提供協助資訊，讓使用者能自行解決疑問。</span>
+        </article>
+      </section>
+
+      <section class="demo">
+        <div class="panel form-panel">
+          <div class="toolbar" aria-label="教學模式切換">
+            <button id="goodMode" class="active" type="button">良好設計</button>
+            <button id="badMode" type="button">問題設計</button>
+          </div>
+
+          <h2 class="section-title">預約課程諮詢</h2>
+          <p class="section-desc" id="modeDesc">
+            選擇諮詢主題、時段與聯絡方式，送出後由課務人員回覆。
+          </p>
+
+          <div class="task-summary" aria-label="任務摘要">
+            <div class="summary-item">
+              <strong>任務</strong>
+              <span>預約 30 分鐘課程諮詢</span>
+            </div>
+            <div class="summary-item">
+              <strong>需要資料</strong>
+              <span>主題、時段、聯絡方式</span>
+            </div>
+            <div class="summary-item">
+              <strong>完成方式</strong>
+              <span>確認資料後送出</span>
+            </div>
+          </div>
+
+          <div id="badClutter" class="bad-clutter">
+            問題設計：所有說明、限制與選項同時出現，部分欄位沒有事前限制，使用者需要自行判斷正確填法。
+          </div>
+
+          <div id="badInfoWall" class="bad-info-wall">
+            <p><strong>預約規則、資格、注意事項、作業流程、聯絡方式、課程類型、諮詢模式、改期規範：</strong></p>
+            <ul>
+              <li>可預約時段依課務人員與教室檔期調整，請自行輸入可配合時間。</li>
+              <li>諮詢主題請自行描述，若描述不足可能需重新聯絡。</li>
+              <li>手機、Email、Line、公司電話皆可，但請自行確認格式。</li>
+              <li>如需改期，請於兩個工作天前聯絡。</li>
+            </ul>
+          </div>
+
+          <form id="bookingForm" novalidate>
+            <div class="field" id="topicField">
+              <label for="topic">諮詢主題<span class="required"> *</span></label>
+              <select id="topic">
+                <option value="">請選擇主題</option>
+                <option value="ux">UX 與網站架構規劃</option>
+                <option value="frontend">HTML／CSS／JavaScript 實作</option>
+                <option value="ai">AI 輔助網站製作</option>
+                <option value="publish">GitHub Pages 網站上架</option>
+              </select>
+              <input id="topicText" type="text" placeholder="請自行輸入主題" style="display:none">
+              <p class="hint" id="topicHint">用選單降低輸入錯誤，也讓使用者知道有哪些可選方向。</p>
+              <p class="error">請選擇諮詢主題。</p>
+            </div>
+
+            <div class="field" id="quickField">
+              <label>快速設定</label>
+              <div class="quick-actions">
+                <button class="quick-button" type="button" data-topic="ux" data-time="tue-am">
+                  我想規劃網站
+                  <span>自動帶入 UX 與網站架構</span>
+                </button>
+                <button class="quick-button" type="button" data-topic="frontend" data-time="wed-pm">
+                  我想學前端實作
+                  <span>自動帶入 HTML／CSS／JS</span>
+                </button>
+                <button class="quick-button" type="button" data-topic="publish" data-time="fri-am">
+                  我想上架網站
+                  <span>自動帶入 GitHub Pages</span>
+                </button>
+              </div>
+              <p class="hint">熟悉任務的使用者可以直接使用快速設定。</p>
+            </div>
+
+            <div class="field" id="timeField">
+              <label for="time">諮詢時段<span class="required"> *</span></label>
+              <select id="time">
+                <option value="">請選擇可預約時段</option>
+                <option value="tue-am">週二 10:00–10:30</option>
+                <option value="wed-pm">週三 14:00–14:30</option>
+                <option value="fri-am">週五 11:00–11:30</option>
+              </select>
+              <input id="timeText" type="text" placeholder="例如：下週某天上午" style="display:none">
+              <p class="hint" id="timeHint">只顯示可預約時段，避免使用者選到無法安排的時間。</p>
+              <p class="error">請選擇諮詢時段。</p>
+            </div>
+
+            <div class="field" id="emailField">
+              <label for="email">電子郵件<span class="required"> *</span></label>
+              <input id="email" type="email" placeholder="name@example.com" autocomplete="email">
+              <p class="hint">諮詢確認信將寄送至此信箱。</p>
+              <p class="error">請輸入有效的電子郵件格式。</p>
+            </div>
+
+            <div class="field" id="noteField">
+              <label for="note">補充說明</label>
+              <textarea id="note" placeholder="例如：我想做一個產業服務網站，但不確定該如何安排首頁內容。"></textarea>
+              <p class="hint" id="noteHint">只需簡短描述目前遇到的問題。</p>
+            </div>
+
+            <div class="help-box" id="helpBox">
+              <button class="help-toggle" id="helpToggle" type="button">需要協助嗎？點我查看填寫說明</button>
+              <div class="help-content">
+                選不出主題時，可先選「UX 與網站架構規劃」；不確定時段時，可先送出一個可配合時段，後續由課務人員協調。
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="primary" id="submitButton" type="submit">送出預約</button>
+              <button class="secondary" id="clearButton" type="button">清除內容</button>
+            </div>
+
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <aside class="panel side-panel">
+          <h3>請觀察四件事</h3>
+
+          <div class="check-item">
+            <strong>錯誤是否在送出前被降低？</strong>
+            <span>良好設計用選單、格式提示與可預約時段，減少填錯機率。</span>
+          </div>
+
+          <div class="check-item">
+            <strong>熟悉者是否能更快完成？</strong>
+            <span>快速設定可以一次帶入常見需求，不必逐欄重填。</span>
+          </div>
+
+          <div class="check-item">
+            <strong>畫面是否只留下必要內容？</strong>
+            <span>良好設計保留任務所需資訊，問題設計則把規則與說明全部塞在一起。</span>
+          </div>
+
+          <div class="check-item">
+            <strong>需要協助時找得到說明嗎？</strong>
+            <span>良好設計把支援資訊收合，使用者需要時再展開。</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="teaching-box">
+        <h2>課堂操作建議</h2>
+        <ol>
+          <li>先使用「良好設計」，請學員用快速設定完成一次預約。</li>
+          <li>切換成「問題設計」，觀察欄位變成自由輸入後可能產生哪些錯誤。</li>
+          <li>比較兩種設計的資訊量，討論哪一個畫面比較容易抓到重點。</li>
+          <li>展開「需要協助嗎？」說明，討論說明資訊應該出現在什麼時機。</li>
+          <li>總結四項原則如何共同降低阻力，讓使用者更容易完成任務。</li>
+        </ol>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const page = document.getElementById("page");
+    const goodModeBtn = document.getElementById("goodMode");
+    const badModeBtn = document.getElementById("badMode");
+    const modeDesc = document.getElementById("modeDesc");
+
+    const form = document.getElementById("bookingForm");
+    const topic = document.getElementById("topic");
+    const topicText = document.getElementById("topicText");
+    const topicHint = document.getElementById("topicHint");
+    const time = document.getElementById("time");
+    const timeText = document.getElementById("timeText");
+    const timeHint = document.getElementById("timeHint");
+    const email = document.getElementById("email");
+    const note = document.getElementById("note");
+    const noteHint = document.getElementById("noteHint");
+
+    const topicField = document.getElementById("topicField");
+    const timeField = document.getElementById("timeField");
+    const emailField = document.getElementById("emailField");
+
+    const quickButtons = [...document.querySelectorAll(".quick-button")];
+    const helpBox = document.getElementById("helpBox");
+    const helpToggle = document.getElementById("helpToggle");
+    const submitButton = document.getElementById("submitButton");
+    const clearButton = document.getElementById("clearButton");
+    const status = document.getElementById("status");
+
+    let goodMode = true;
+
+    function setMode(mode){
+      goodMode = mode === "good";
+
+      page.classList.toggle("bad-mode", !goodMode);
+      goodModeBtn.classList.toggle("active", goodMode);
+      badModeBtn.classList.toggle("active", !goodMode);
+
+      modeDesc.textContent = goodMode
+        ? "選擇諮詢主題、時段與聯絡方式，送出後由課務人員回覆。"
+        : "請自行輸入主題、時段與聯絡資料，系統送出後再檢查。";
+
+      topic.style.display = goodMode ? "block" : "none";
+      topicText.style.display = goodMode ? "none" : "block";
+      time.style.display = goodMode ? "block" : "none";
+      timeText.style.display = goodMode ? "none" : "block";
+
+      topicHint.textContent = goodMode
+        ? "用選單降低輸入錯誤，也讓使用者知道有哪些可選方向。"
+        : "自由輸入容易出現名稱不一致、拼字錯誤或描述不足。";
+
+      timeHint.textContent = goodMode
+        ? "只顯示可預約時段，避免使用者選到無法安排的時間。"
+        : "自由輸入時段容易出現無法安排或格式不清楚的問題。";
+
+      noteHint.textContent = goodMode
+        ? "只需簡短描述目前遇到的問題。"
+        : "所有補充資訊都要求使用者自行判斷要寫到什麼程度。";
+
+      submitButton.textContent = goodMode ? "送出預約" : "SUBMIT";
+      clearButton.textContent = goodMode ? "清除內容" : "RESET";
+
+      quickButtons.forEach(button => button.classList.remove("selected"));
+      resetValidation();
+      hideStatus();
+      helpBox.classList.remove("open");
+    }
+
+    function resetValidation(){
+      [topicField, timeField, emailField].forEach(field => field.classList.remove("invalid"));
+    }
+
+    function hideStatus(){
+      status.className = "status";
+      status.textContent = "";
+    }
+
+    function showStatus(type, message){
+      status.className = `status show ${type}`;
+      status.textContent = message;
+    }
+
+    function isEmailValid(value){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+    }
+
+    function selectedTopic(){
+      return goodMode ? topic.value : topicText.value.trim();
+    }
+
+    function selectedTime(){
+      return goodMode ? time.value : timeText.value.trim();
+    }
+
+    goodModeBtn.addEventListener("click", () => setMode("good"));
+    badModeBtn.addEventListener("click", () => setMode("bad"));
+
+    quickButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        quickButtons.forEach(item => item.classList.remove("selected"));
+        button.classList.add("selected");
+
+        topic.value = button.dataset.topic;
+        time.value = button.dataset.time;
+        note.value = button.textContent.trim().split("\n")[0] + "。";
+        hideStatus();
+        resetValidation();
+      });
+    });
+
+    helpToggle.addEventListener("click", () => {
+      helpBox.classList.toggle("open");
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      resetValidation();
+      hideStatus();
+
+      let firstInvalid = null;
+
+      if (!selectedTopic()) {
+        topicField.classList.add("invalid");
+        firstInvalid = goodMode ? topic : topicText;
+      }
+
+      if (!selectedTime()) {
+        timeField.classList.add("invalid");
+        firstInvalid ||= goodMode ? time : timeText;
+      }
+
+      if (!isEmailValid(email.value)) {
+        emailField.classList.add("invalid");
+        firstInvalid ||= email;
+      }
+
+      if (firstInvalid) {
+        firstInvalid.focus();
+        showStatus(
+          "error",
+          goodMode
+            ? "請依欄位提示補齊資料後再送出。"
+            : "資料格式或內容不完整，請自行檢查主題、時段與聯絡資料。"
+        );
+        return;
+      }
+
+      if (!goodMode && !/週|星期|[0-9]/.test(timeText.value.trim())) {
+        timeField.classList.add("invalid");
+        timeText.focus();
+        showStatus("error", "時段描述不明確，請重新輸入較具體的時間。");
+        return;
+      }
+
+      showStatus(
+        "success",
+        goodMode
+          ? "預約資料已完成。課務人員將依照你選擇的時段寄送確認信。"
+          : "已送出，但可能仍需人工確認資料是否完整。"
+      );
+    });
+
+    clearButton.addEventListener("click", () => {
+      const confirmed = window.confirm("確定要清除目前已填寫的內容嗎？");
+      if (!confirmed) return;
+
+      form.reset();
+      quickButtons.forEach(button => button.classList.remove("selected"));
+      resetValidation();
+      hideStatus();
+    });
+  </script>
+</body>
+</html>
