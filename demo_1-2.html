@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UX 原則互動示範｜一致性、預防錯誤、辨識優於記憶</title>
+  <title>UX 原則互動示範｜讓使用者不用猜</title>
   <style>
     :root{
       --bg:#f4f6f9;
@@ -33,9 +33,7 @@
       line-height:1.65;
     }
 
-    button,input,select{
-      font:inherit;
-    }
+    button,input,select{font:inherit}
 
     .site-header{
       background:var(--surface);
@@ -62,8 +60,8 @@
     .header-note{color:var(--muted);font-size:.9rem}
 
     main{padding:44px 0 72px}
-
     .hero{margin-bottom:28px}
+
     .eyebrow{
       margin:0 0 8px;
       color:var(--primary);
@@ -76,11 +74,21 @@
     h1{font-size:clamp(2rem,5vw,3.1rem);margin:0 0 12px}
     .hero p{max-width:760px;margin:0;color:var(--muted)}
 
+    .core-message{
+      margin:24px 0 30px;
+      padding:18px 20px;
+      border-left:5px solid var(--primary);
+      background:#eef3ff;
+      border-radius:10px;
+      font-weight:800;
+      font-size:1.08rem;
+    }
+
     .principles{
       display:grid;
       grid-template-columns:repeat(3,1fr);
       gap:16px;
-      margin:26px 0 32px;
+      margin:0 0 32px;
     }
 
     .principle-card{
@@ -141,18 +149,10 @@
       border-color:var(--primary);
     }
 
-    .section-title{
-      margin:0 0 6px;
-    }
+    .section-title{margin:0 0 6px}
+    .section-desc{margin:0 0 22px;color:var(--muted)}
 
-    .section-desc{
-      margin:0 0 22px;
-      color:var(--muted);
-    }
-
-    .field{
-      margin-bottom:20px;
-    }
+    .field{margin-bottom:20px}
 
     label{
       display:block;
@@ -183,22 +183,6 @@
       font-size:.9rem;
     }
 
-    .error{
-      display:none;
-      margin:7px 0 0;
-      color:var(--danger);
-      font-size:.9rem;
-      font-weight:700;
-    }
-
-    .field.invalid input,
-    .field.invalid select{
-      border-color:var(--danger);
-      background:var(--danger-bg);
-    }
-
-    .field.invalid .error{display:block}
-
     .chip-list{
       display:flex;
       flex-wrap:wrap;
@@ -216,6 +200,7 @@
     }
 
     .chip:hover{border-color:var(--primary)}
+
     .chip.selected{
       background:#eaf0ff;
       border-color:var(--primary);
@@ -274,16 +259,7 @@
     .teaching-box h2{margin-top:0;font-size:1.2rem}
     .teaching-box ol{margin-bottom:0;padding-left:1.25rem}
 
-    .inconsistent{
-      background:#fff7ed !important;
-      color:#7c2d12 !important;
-      border-color:#fdba74 !important;
-      border-radius:2px !important;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-    }
-
-    .memory-only{
+    .guessing-note{
       display:none;
       background:var(--warning-bg);
       color:var(--warning);
@@ -291,6 +267,15 @@
       padding:12px 14px;
       border-radius:10px;
       margin-bottom:18px;
+    }
+
+    .inconsistent{
+      background:#fff7ed !important;
+      color:#7c2d12 !important;
+      border:1px solid #fdba74 !important;
+      border-radius:2px !important;
+      text-transform:uppercase;
+      letter-spacing:.06em;
     }
 
     @media(max-width:840px){
@@ -310,7 +295,7 @@
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <div class="brand">數位技能學苑</div>
+      <div class="brand">TMDA 跨領域學院</div>
       <div class="header-note">UX 原則互動示範頁</div>
     </div>
   </header>
@@ -319,82 +304,89 @@
     <div class="container">
       <section class="hero">
         <p class="eyebrow">互動教學案例</p>
-        <h1>讓使用者少猜、少錯、少記</h1>
+        <h1>讓使用者不用花力氣猜測</h1>
         <p>
-          透過「課程報名資料」情境，觀察一致性與標準化、預防錯誤，以及辨識優於記憶如何影響操作體驗。
+          透過課程報名情境，比較介面是否使用一致的設計、使用者聽得懂的語言，以及容易辨識的選項。
         </p>
       </section>
+
+      <div class="core-message">
+        好的介面會直接提供線索，讓使用者知道這是什麼、能做什麼，以及下一步該怎麼做。
+      </div>
 
       <section class="principles">
         <article class="principle-card">
           <strong>一致性與標準化</strong>
-          <span>相同功能使用相同名稱、外觀與操作方式。</span>
+          <span>相同功能使用相同名稱、外觀與操作方式，避免使用者重新猜規則。</span>
         </article>
+
         <article class="principle-card">
-          <strong>預防錯誤</strong>
-          <span>在使用者送出前，先限制或提醒可能出錯的地方。</span>
+          <strong>符合真實世界</strong>
+          <span>使用使用者熟悉的詞彙與順序，不使用內部代碼或系統術語。</span>
         </article>
+
         <article class="principle-card">
           <strong>辨識優於記憶</strong>
-          <span>把可選項目直接呈現，不要求使用者自己回想。</span>
+          <span>把可用選項直接顯示，減少回想名稱、代碼與操作步驟的負擔。</span>
         </article>
       </section>
 
       <section class="demo">
         <div class="panel form-panel">
           <div class="toolbar" aria-label="教學模式切換">
-            <button id="goodMode" class="active" type="button">良好設計</button>
-            <button id="badMode" type="button">問題設計</button>
+            <button id="goodMode" class="active" type="button">容易理解的設計</button>
+            <button id="badMode" type="button">需要猜測的設計</button>
           </div>
 
-          <h2 class="section-title">課程報名資料</h2>
-          <p class="section-desc">請選擇課程並填寫基本資料。</p>
+          <h2 class="section-title" id="formTitle">課程報名資料</h2>
+          <p class="section-desc" id="formDesc">請選擇想參加的課程，並填寫基本資料。</p>
 
-          <div id="memoryWarning" class="memory-only">
-            問題設計：請自行輸入課程代碼，例如 UX101、WEB203 或 AI305。
-          </div>
+          <!-- <div id="guessingNote" class="guessing-note">
+            問題設計：請自行判斷欄位與按鈕的用途，並記住正確的課程代碼。
+          </div> -->
 
           <form id="demoForm" novalidate>
-            <div class="field" id="courseField">
-              <label for="course">選擇課程<span class="required"> *</span></label>
+            <div class="field">
+              <label for="course" id="courseLabel">選擇課程<span class="required"> *</span></label>
 
               <select id="course">
                 <option value="">請選擇課程</option>
-                <option value="UX101">UX101｜使用者體驗基礎</option>
-                <option value="WEB203">WEB203｜HTML 與 CSS 實作</option>
-                <option value="AI305">AI305｜AI 輔助前端開發</option>
+                <option value="UX101">使用者體驗基礎</option>
+                <option value="WEB203">HTML 與 CSS 實作</option>
+                <option value="AI305">AI 輔助前端開發</option>
               </select>
 
-              <input id="courseCodeInput" type="text" placeholder="請輸入課程代碼" style="display:none">
+              <input id="courseCodeInput" type="text" placeholder="輸入代碼" style="display:none">
 
-              <p class="hint" id="courseHint">直接從清單辨識課程，不必記住代碼。</p>
-              <p class="error">請先選擇或輸入有效的課程代碼。</p>
-            </div>
-
-            <div class="field" id="emailField">
-              <label for="email">電子郵件<span class="required"> *</span></label>
-              <input id="email" type="email" autocomplete="email" placeholder="name@example.com">
-              <p class="hint">系統會檢查基本格式，並用於寄送確認信。</p>
-              <p class="error">請輸入有效的電子郵件格式。</p>
-            </div>
-
-            <div class="field" id="phoneField">
-              <label for="phone">手機號碼<span class="required"> *</span></label>
-              <input id="phone" type="tel" inputmode="numeric" maxlength="10" placeholder="0912345678">
-              <p class="hint">僅接受 10 碼數字，第一碼需為 0。</p>
-              <p class="error">手機號碼格式不正確，請輸入 10 碼數字。</p>
+              <p class="hint" id="courseHint">
+                直接從課程名稱中選擇，不需要記住代碼。
+              </p>
             </div>
 
             <div class="field">
-              <label>希望加強的主題</label>
+              <label for="identity" id="identityLabel">目前身分</label>
+              <select id="identity">
+                <option value="">請選擇</option>
+                <option>在職工作者</option>
+                <option>主管或管理者</option>
+                <option>自由工作者</option>
+                <option>其他</option>
+              </select>
+              <p class="hint" id="identityHint">使用日常熟悉的分類方式。</p>
+            </div>
+
+            <div class="field">
+              <label id="topicLabel">希望加強的主題</label>
               <div class="chip-list" id="topicChips">
-                <button class="chip" type="button" data-value="UX">UX 規劃</button>
-                <button class="chip" type="button" data-value="HTML">HTML</button>
-                <button class="chip" type="button" data-value="CSS">CSS</button>
-                <button class="chip" type="button" data-value="JS">JavaScript</button>
-                <button class="chip" type="button" data-value="AI">AI 輔助開發</button>
+                <button class="chip" type="button">UX 規劃</button>
+                <button class="chip" type="button">HTML</button>
+                <button class="chip" type="button">CSS</button>
+                <button class="chip" type="button">JavaScript</button>
+                <button class="chip" type="button">AI 輔助開發</button>
               </div>
-              <p class="hint" id="topicHint">直接點選項目，不必記住課程內容或輸入完整名稱。</p>
+              <p class="hint" id="topicHint">
+                直接點選可辨識的選項，不必自行輸入完整名稱。
+              </p>
             </div>
 
             <div class="actions">
@@ -410,18 +402,18 @@
           <h3>請觀察三件事</h3>
 
           <div class="check-item">
-            <strong>按鈕是否一致？</strong>
-            <span>同樣是主要操作，名稱、顏色與位置是否一致。</span>
+            <strong>相同功能看起來是否一致？</strong>
+            <span>按鈕的顏色、名稱與位置是否能讓人快速辨認用途。</span>
           </div>
 
           <div class="check-item">
-            <strong>錯誤是否被事前避免？</strong>
-            <span>格式限制、提示文字與即時檢查，能否降低填錯機率。</span>
+            <strong>網站使用誰的語言？</strong>
+            <span>使用者看到的是熟悉的課程名稱，還是內部代碼與系統術語。</span>
           </div>
 
           <div class="check-item">
-            <strong>使用者需要記住什麼？</strong>
-            <span>課程與主題是否直接顯示，還是要求使用者回想代碼與名稱。</span>
+            <strong>使用者需要記住多少資訊？</strong>
+            <span>選項是否直接呈現，還是需要回想代碼、名稱與操作方式。</span>
           </div>
         </aside>
       </section>
@@ -429,10 +421,10 @@
       <section class="teaching-box">
         <h2>課堂操作建議</h2>
         <ol>
-          <li>先使用「良好設計」，完成一次報名。</li>
-          <li>切換成「問題設計」，比較課程選擇與按鈕外觀的差異。</li>
-          <li>輸入錯誤電子郵件或手機號碼，觀察是否能事前發現問題。</li>
-          <li>詢問學員：哪一種設計需要記更多資訊？哪一種較容易操作錯誤？</li>
+          <li>先使用「容易理解的設計」，請學員完成一次選擇。</li>
+          <li>切換成「需要猜測的設計」，比較欄位名稱、課程代碼與按鈕文字。</li>
+          <li>詢問學員：哪些地方需要猜？哪些地方需要先記住資訊？</li>
+          <li>總結三項原則如何共同降低理解與操作負擔。</li>
         </ol>
       </section>
     </div>
@@ -443,8 +435,15 @@
     const badModeBtn = document.getElementById("badMode");
     const courseSelect = document.getElementById("course");
     const courseCodeInput = document.getElementById("courseCodeInput");
+    const courseLabel = document.getElementById("courseLabel");
     const courseHint = document.getElementById("courseHint");
-    const memoryWarning = document.getElementById("memoryWarning");
+    const identityLabel = document.getElementById("identityLabel");
+    const identityHint = document.getElementById("identityHint");
+    const topicLabel = document.getElementById("topicLabel");
+    const topicHint = document.getElementById("topicHint");
+    const formTitle = document.getElementById("formTitle");
+    const formDesc = document.getElementById("formDesc");
+    const guessingNote = document.getElementById("guessingNote");
     const submitBtn = document.getElementById("submitBtn");
     const clearBtn = document.getElementById("clearBtn");
     const form = document.getElementById("demoForm");
@@ -455,37 +454,50 @@
 
     function setMode(mode) {
       goodMode = mode === "good";
+
       goodModeBtn.classList.toggle("active", goodMode);
       badModeBtn.classList.toggle("active", !goodMode);
 
       courseSelect.style.display = goodMode ? "block" : "none";
       courseCodeInput.style.display = goodMode ? "none" : "block";
-      memoryWarning.style.display = goodMode ? "none" : "block";
+      guessingNote.style.display = goodMode ? "none" : "block";
+
+      formTitle.textContent = goodMode ? "課程報名資料" : "REQ FORM";
+      formDesc.textContent = goodMode
+        ? "請選擇想參加的課程，並填寫基本資料。"
+        : "請完成以下程序。";
+
+      courseLabel.innerHTML = goodMode
+        ? '選擇課程<span class="required"> *</span>'
+        : 'ITEM CODE<span class="required"> *</span>';
 
       courseHint.textContent = goodMode
-        ? "直接從清單辨識課程，不必記住代碼。"
-        : "請記住並輸入正確課程代碼。";
+        ? "直接從課程名稱中選擇，不需要記住代碼。"
+        : "請輸入 UX101、WEB203 或 AI305。";
 
-      submitBtn.textContent = goodMode ? "送出報名" : "GO";
-      clearBtn.textContent = goodMode ? "清除內容" : "RESET";
+      identityLabel.textContent = goodMode ? "目前身分" : "USR TYPE";
+      identityHint.textContent = goodMode
+        ? "使用日常熟悉的分類方式。"
+        : "請選擇系統定義的使用者類型。";
+
+      topicLabel.textContent = goodMode ? "希望加強的主題" : "MODULE";
+      topicHint.textContent = goodMode
+        ? "直接點選可辨識的選項，不必自行輸入完整名稱。"
+        : "請依代碼與縮寫自行判斷。";
+
+      topicChips.forEach((chip, index) => {
+        const goodLabels = ["UX 規劃", "HTML", "CSS", "JavaScript", "AI 輔助開發"];
+        const badLabels = ["M01", "M02", "M03", "M04", "M05"];
+        chip.textContent = goodMode ? goodLabels[index] : badLabels[index];
+      });
+
+      submitBtn.textContent = goodMode ? "送出報名" : "EXEC";
+      clearBtn.textContent = goodMode ? "清除內容" : "RST";
 
       submitBtn.classList.toggle("inconsistent", !goodMode);
       clearBtn.classList.toggle("inconsistent", !goodMode);
 
-      topicChips.forEach((chip, index) => {
-        chip.style.display = goodMode || index < 2 ? "inline-block" : "none";
-      });
-
-      document.getElementById("topicHint").textContent = goodMode
-        ? "直接點選項目，不必記住課程內容或輸入完整名稱。"
-        : "問題設計只顯示少量選項，其餘內容需自行記憶。";
-
-      resetValidation();
       hideStatus();
-    }
-
-    function resetValidation() {
-      document.querySelectorAll(".field").forEach(field => field.classList.remove("invalid"));
     }
 
     function hideStatus() {
@@ -496,19 +508,6 @@
     function showStatus(type, message) {
       status.className = `status show ${type}`;
       status.textContent = message;
-    }
-
-    function validEmail(value) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
-    }
-
-    function validPhone(value) {
-      return /^0\d{9}$/.test(value.trim());
-    }
-
-    function validCourse() {
-      if (goodMode) return courseSelect.value !== "";
-      return ["UX101", "WEB203", "AI305"].includes(courseCodeInput.value.trim().toUpperCase());
     }
 
     topicChips.forEach(chip => {
@@ -522,49 +521,35 @@
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      resetValidation();
-      hideStatus();
 
-      const email = document.getElementById("email");
-      const phone = document.getElementById("phone");
+      const hasCourse = goodMode
+        ? courseSelect.value !== ""
+        : ["UX101", "WEB203", "AI305"].includes(courseCodeInput.value.trim().toUpperCase());
 
-      let firstInvalid = null;
-
-      if (!validCourse()) {
-        document.getElementById("courseField").classList.add("invalid");
-        firstInvalid = goodMode ? courseSelect : courseCodeInput;
-      }
-
-      if (!validEmail(email.value)) {
-        document.getElementById("emailField").classList.add("invalid");
-        firstInvalid ||= email;
-      }
-
-      if (!validPhone(phone.value)) {
-        document.getElementById("phoneField").classList.add("invalid");
-        firstInvalid ||= phone;
-      }
-
-      if (firstInvalid) {
-        firstInvalid.focus();
-        showStatus("error", goodMode
-          ? "請依欄位提示修正資料後再送出。"
-          : "ERROR 01");
+      if (!hasCourse) {
+        showStatus(
+          "error",
+          goodMode
+            ? "請先選擇想參加的課程。"
+            : "INVALID ITEM"
+        );
         return;
       }
 
-      showStatus("success", goodMode
-        ? "報名資料已通過檢查，可以進入下一步。"
-        : "OK");
+      showStatus(
+        "success",
+        goodMode
+          ? "資料已完成，可以送出報名。"
+          : "DONE"
+      );
     });
 
     clearBtn.addEventListener("click", () => {
-      const confirmed = window.confirm("確定要清除目前已填寫的內容嗎？");
+      const confirmed = window.confirm("確定要清除目前已選擇的內容嗎？");
       if (!confirmed) return;
 
       form.reset();
       topicChips.forEach(chip => chip.classList.remove("selected"));
-      resetValidation();
       hideStatus();
     });
   </script>
