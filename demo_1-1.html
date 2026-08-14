@@ -7,7 +7,7 @@
   <link rel="shortcut icon" href="favicon.png">
   <style>
     :root{
-      --bg:#f4f6f9;
+      --bg:#fdffff;
       --surface:#ffffff;
       --text:#1f2937;
       --muted:#667085;
@@ -324,16 +324,12 @@
 
         <article class="principle-card">
           <strong>錯誤協助</strong>
-          <span>發生錯誤時，指出問題位置並清楚說明修正方式。</span>
+          <span>發生錯誤時，指出問題位置並清楚說明可能的修正方式。</span>
         </article>
       </section>
 
       <section class="demo">
         <div class="panel form-panel">
-          <div class="progress" aria-label="報名進度">
-            <div class="step active" id="stepForm">1. 填寫資料</div>
-            <div class="step" id="stepDone">2. 完成報名</div>
-          </div>
 
           <h2 class="section-title">AI 輔助網頁設計入門</h2>
           <p class="section-desc">請填寫以下資料完成報名。</p>
@@ -423,8 +419,7 @@
     const submitButton = document.getElementById("submitButton");
     const clearButton = document.getElementById("clearButton");
     const statusMessage = document.getElementById("statusMessage");
-    const stepForm = document.getElementById("stepForm");
-    const stepDone = document.getElementById("stepDone");
+
 
     const fields = {
       name: {
@@ -488,10 +483,7 @@
       statusMessage.textContent = "";
     }
 
-    function resetProgress() {
-      stepForm.classList.add("active");
-      stepDone.classList.remove("active");
-    }
+
 
     Object.values(fields).forEach(field => {
       ["input", "change"].forEach(eventName => {
@@ -519,8 +511,7 @@
       window.setTimeout(() => {
         submitButton.disabled = false;
         submitButton.textContent = "送出報名";
-        stepForm.classList.remove("active");
-        stepDone.classList.add("active");
+
 
         showStatus(
           "success",
