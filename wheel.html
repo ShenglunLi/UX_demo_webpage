@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>抽選輪盤</title>
+  <link rel="shortcut icon" href="favicon.png">
+  <style>
+    /* =========================================================
+       基本設定
+    ========================================================= */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #212121;
+      --panel: #ffffff;
+
+      --text: #e1e1e1;
+      --muted: #6b7280;
+
+      --border: #dbe2ea;
+
+      --primary: #2563eb;
+
+      /* 抽選按鈕改為深灰 */
+      --spin-button: #374151;
+      --spin-button-hover: #1f2937;
+
+      --danger: #dc2626;
+
+      --shadow:
+        0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      margin: 0;
+
+      min-height: 100vh;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        "Microsoft JhengHei",
+        sans-serif;
+
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* =========================================================
+       整體版面
+    ========================================================= */
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+
+      margin: 0 auto;
+
+      padding: 32px 0;
+    }
+
+    .layout {
+      display: grid;
+
+      grid-template-columns: minmax(0, 1fr) 320px;
+
+      gap: 32px;
+
+      align-items: start;
+    }
+
+    /* =========================================================
+       輪盤區
+    ========================================================= */
+
+    .wheel-section {
+      min-width: 0;
+    }
+
+    .header {
+      margin-bottom: 20px;
+
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+
+      font-size: clamp(24px, 3vw, 36px);
+
+      line-height: 1.3;
+    }
+
+    .instruction {
+      margin: 8px 0 0;
+
+      color: var(--muted);
+
+      font-size: 15px;
+    }
+
+    /* =========================================================
+       輪盤
+    ========================================================= */
+
+    .wheel-area {
+      position: relative;
+
+      width: min(100%, 620px);
+
+      aspect-ratio: 1;
+
+      margin: 0 auto;
+    }
+
+    #wheel {
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      border-radius: 50%;
+
+      background: white;
+
+      box-shadow: var(--shadow);
+
+      cursor: pointer;
+
+      touch-action: manipulation;
+    }
+
+    /* =========================================================
+       輪盤指標
+    ========================================================= */
+
+    .pointer {
+      position: absolute;
+
+      z-index: 5;
+
+      top: -3px;
+      left: 50%;
+
+      width: 0;
+      height: 0;
+
+      transform: translateX(-50%);
+
+      border-left: 18px solid transparent;
+
+      border-right: 18px solid transparent;
+
+      border-top: 38px solid #374151;
+
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+    }
+
+    /* =========================================================
+       中央抽選按鈕
+    ========================================================= */
+
+    .spin-button {
+      position: absolute;
+      z-index: 4;
+      top: 50%;
+      left: 50%;
+      width: 112px;
+      height: 112px;
+      transform: translate(-50%, -50%);
+      border: 6px solid white;
+      border-radius: 50%;
+      background: var(--spin-button);
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .spin-button:hover {
+      background: var(--spin-button-hover);
+    }
+
+    .spin-button:active {
+      transform: translate(-50%, -50%) scale(0.96);
+    }
+
+    .spin-button:disabled {
+      cursor: wait;
+      opacity: 0.8;
+    }
+
+    /* =========================================================
+       抽選結果
+    ========================================================= */
+
+    .result {
+      height: 128px;
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 14px;
+      flex: 0 0 auto;
+    }
+
+    .result-text {
+      min-height: 50px;
+      margin-top: 5px;
+      color: #374151;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .result-desktop {
+      width: 100%;
+      margin: 0 0 12px;
+    }
+
+    .result-mobile {
+      display: none;
+      width: min(100%, 620px);
+      margin: 24px auto 0;
+    }
+
+    /* =========================================================
+       控制面板區
+    ========================================================= */
+
+    .control-column {
+      position: sticky;
+
+      top: 24px;
+    }
+
+    .control-toggle {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #232323;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    }
+
+    .control-toggle:hover {
+      background: #3e3e3e;
+    }
+
+    .toggle-icon {
+      display: inline-block;
+
+      font-size: 18px;
+
+      transition:
+        transform 0.25s;
+    }
+
+    .control-toggle.open
+    .toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    /* =========================================================
+       收合面板
+    ========================================================= */
+
+    .control-panel {
+      overflow: hidden;
+      max-height: 0;
+      margin-top: 0;
+      opacity: 0;
+      background: #1e1e1e;
+      border: 0 solid var(--border);
+      border-radius: 16px;
+      box-shadow: none;
+
+      transition:
+        max-height 0.35s ease,
+        opacity 0.25s ease,
+        margin-top 0.25s ease,
+        padding 0.25s ease,
+        border-width 0.25s ease;
+    }
+
+    .control-panel.open {
+      max-height: 1600px;
+      margin-top: 12px;
+      padding: 18px;
+      opacity: 1;
+      border-width: 1px;
+      box-shadow:
+        var(--shadow);
+    }
+
+    /* =========================================================
+       表單
+    ========================================================= */
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      font-size: 14px;
+
+      font-weight: 700;
+    }
+
+    .text-input {
+      width: 100%;
+      min-width: 0;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      background: black;
+      outline: none;
+    }
+
+    .text-input:focus {
+      border-color: var(--primary);
+
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+
+    /* =========================================================
+       選項標題列
+    ========================================================= */
+
+    .option-heading {
+      display: flex;
+
+      align-items: center;
+
+      justify-content:
+        space-between;
+
+      gap: 8px;
+
+      margin-bottom: 10px;
+    }
+
+    .option-heading-title {
+      font-size: 14px;
+
+      font-weight: 700;
+    }
+
+    .option-tools {
+      display: flex;
+
+      gap: 5px;
+    }
+
+    .small-button {
+      padding: 5px 8px;
+
+      border: 1px solid var(--border);
+
+      border-radius: 7px;
+
+      background: var(--bg);
+
+      color: var(--text);
+
+      font-size: 12px;
+    }
+
+    .small-button:hover {
+      background: #343434;
+    }
+
+    /* =========================================================
+       選項清單
+    ========================================================= */
+
+    .option-list {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 8px;
+
+      max-height: 440px;
+
+      overflow-y: auto;
+
+      padding-right: 3px;
+    }
+
+    /* =========================================================
+       單一選項
+    ========================================================= */
+
+    .option-row {
+      display: grid;
+
+      grid-template-columns: 18px 13px minmax(0, 1fr) 28px;
+
+      gap: 7px;
+
+      align-items: center;
+    }
+
+    .option-row
+    input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+
+      margin: 0;
+
+      accent-color: var(--primary);
+    }
+
+    /* =========================================================
+       顏色指示點
+    ========================================================= */
+
+    .color-dot {
+      width: 12px;
+      height: 12px;
+
+      border-radius: 50%;
+
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    /* =========================================================
+       刪除按鈕
+    ========================================================= */
+
+    .delete-button {
+      display: flex;
+
+      width: 28px;
+      height: 28px;
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 0;
+
+      border: 0;
+
+      border-radius: 6px;
+
+      background: transparent;
+
+      color: #9ca3af;
+
+      font-size: 18px;
+
+      line-height: 1;
+    }
+
+    .delete-button:hover {
+      background: #fee2e2;
+
+      color: var(--danger);
+    }
+
+    /* =========================================================
+       新增選項按鈕
+    ========================================================= */
+
+    .add-button {
+      width: 100%;
+
+      margin-top: 10px;
+
+      padding: 9px 10px;
+
+      border:
+        1px dashed #94a3b8;
+
+      border-radius: 8px;
+
+      background: #f8fafc;
+
+      color: #475569;
+
+      font-weight: 600;
+    }
+
+    .add-button:hover {
+      background: #f1f5f9;
+
+      border-color: #64748b;
+    }
+
+    /* =========================================================
+       狀態資訊
+    ========================================================= */
+
+    .option-count {
+      margin-top: 9px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+    }
+
+    /* =========================================================
+       操作說明
+    ========================================================= */
+
+    .help {
+      padding-top: 16px;
+
+      border-top:
+        1px solid var(--border);
+
+      color: var(--muted);
+
+      font-size: 13px;
+
+      line-height: 1.7;
+    }
+
+    .help strong {
+      color: var(--text);
+    }
+
+    /* =========================================================
+       恢復預設
+    ========================================================= */
+
+    .reset-button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    .reset-button:hover {
+      background: #f3f4f6;
+      color: black;
+    }
+
+    /* =========================================================
+       手機版
+    ========================================================= */
+
+    @media (max-width: 800px) {
+
+      .page {
+        width: min(calc(100% - 24px), 640px);
+
+        padding:
+          22px 0 32px;
+      }
+
+      .layout {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 24px;
+      }
+
+      .wheel-section {
+        width: 100%;
+      }
+
+      .control-column {
+        position: static;
+        width: 100%;
+      }
+
+      .result-desktop {
+        display: none;
+      }
+
+      .result-mobile {
+        display: flex;
+      }
+
+      .control-panel.open {
+        max-height: 1800px;
+      }
+
+      .option-list {
+        max-height: none;
+      }
+
+      .spin-button {
+        width: 90px;
+        height: 90px;
+
+        border-width: 5px;
+
+        font-size: 15px;
+      }
+
+      .pointer {
+        border-left-width: 15px;
+
+        border-right-width: 15px;
+
+        border-top-width: 31px;
+      }
+
+    }
+
+    /* =========================================================
+       小型手機
+    ========================================================= */
+
+    @media (max-width: 420px) {
+
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .instruction {
+        font-size: 13px;
+      }
+
+      .spin-button {
+        width: 78px;
+        height: 78px;
+
+        font-size: 14px;
+      }
+
+      .option-heading {
+        align-items:
+          flex-start;
+
+        flex-direction: column;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <div class="layout">
+
+      <!-- =====================================================
+           輪盤
+      ====================================================== -->
+
+      <section class="wheel-section">
+
+        <header class="header">
+          <h1 id="displayTitle">各組討論主題抽選</h1>
+          <p class="instruction">按空白鍵或點擊輪盤開始抽選</p>
+        </header>
+        <div class="wheel-area">
+          <div class="pointer" aria-hidden="true"></div>
+          <canvas id="wheel" width="800" height="800" aria-label="課堂主題抽選輪盤"></canvas>
+          <button id="spinButton" class="spin-button" type="button">開始抽選</button>
+        </div>
+
+        <!-- 手機版抽選結果 -->
+        <div class="result result-mobile" aria-live="polite">
+          <div class="result-label">本次抽選結果</div>
+          <div class="result-text result-text-output"></div>
+        </div>
+
+      </section>
+
+      <!-- =====================================================
+           控制面板
+      ====================================================== -->
+
+      <aside class="control-column">
+
+        <!-- 電腦版抽選結果 -->
+        <div class="result result-desktop" aria-live="polite">
+          <div class="result-label">本次抽選結果</div>
+          <div class="result-text result-text-output"></div>
+        </div>
+
+        <!-- 收合按鈕 -->
+
+        <button id="controlToggle" class="control-toggle" type="button" aria-expanded="false" aria-controls="controlPanel">
+          <span>⚙️ 控制面板</span>
+          <span class="toggle-icon">▼</span>
+        </button>
+
+        <!-- 面板內容 -->
+
+        <div id="controlPanel" class="control-panel">
+
+          <!-- 標題 -->
+
+          <div class="field">
+            <label class="field-label" for="titleInput">輪盤標題</label>
+            <input id="titleInput" class="text-input" type="text" value="各組討論主題抽選">
+
+          </div>
+
+          <!-- 選項 -->
+
+          <div class="field">
+            <div class="option-heading">
+              <span class="option-heading-title">選項內容</span>
+              <div class="option-tools">
+                <button id="showAllButton" class="small-button" type="button">全部顯示</button>
+                <button id="hideAllButton" class="small-button" type="button">全部隱藏</button>
+              </div>
+
+            </div>
+
+            <div id="optionList" class="option-list"></div>
+            <button id="addOptionButton" class="add-button" type="button">＋ 新增選項</button>
+            <div id="optionCount" class="option-count"></div>
+          </div>
+
+          <!-- 使用說明 -->
+
+          <div class="help">
+
+            <div>
+              <strong>新增選項：</strong>
+              點擊「＋ 新增選項」
+            </div>
+
+            <div>
+              <strong>刪除選項：</strong>
+              點擊選項右側 ×
+            </div>
+
+            <div>
+              <strong>顯示／隱藏：</strong>
+              使用選項左側勾選框
+            </div>
+
+            <div>
+              <strong>電腦操作：</strong>
+              空白鍵開始抽選
+            </div>
+
+            <div>
+              <strong>手機操作：</strong>
+              點擊輪盤或中央按鈕
+            </div>
+
+          </div>
+
+          <button id="resetButton" class="reset-button" type="button">恢復預設內容</button>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <script>
+
+    /* =========================================================
+       基本設定
+
+       需要修改初始內容時，
+       主要修改這裡即可。
+    ========================================================= */
+
+    const DEFAULT_TITLE =
+      "各組討論主題抽選";
+
+    const DEFAULT_OPTIONS = [
+      "電商",
+      "餐飲",
+      "專業服務",
+      "資訊服務",
+      "教育",
+      "非營利"
+    ];
+
+    /*
+      參考一般輪盤工具的使用情境，
+      避免一次加入過多項目造成介面與文字難以辨識。
+    */
+
+    const MAX_OPTIONS = 100;
+
+    /* =========================================================
+       色盤
+
+       顏色「依選項順序」決定。
+
+       第 1 項 = COLORS[0]
+       第 2 項 = COLORS[1]
+       第 3 項 = COLORS[2]
+       ...
+
+       超過色盤長度後循環使用。
+
+       隱藏選項不會改變其他選項的原始顏色。
+    ========================================================= */
+
+    const COLORS = [
+
+      "#4285F4",  // 藍
+      "#EA4335",  // 紅
+      "#FBBC05",  // 黃
+      "#34A853",  // 綠
+
+      "#8E44AD",  // 紫
+      "#16A085",  // 青綠
+      "#E67E22",  // 橘
+      "#E84393",  // 桃紅
+
+      "#00A8CC",  // 水藍
+      "#6C5CE7",  // 藍紫
+      "#D35400",  // 深橘
+      "#2E86C1"   // 深藍
+
+    ];
+
+    /* =========================================================
+       狀態
+    ========================================================= */
+
+    let options = createDefaultOptions();
+
+    let rotation = 0;
+
+    let spinning = false;
+
+    /* =========================================================
+       DOM
+    ========================================================= */
+
+    const canvas = document.getElementById("wheel");
+
+    const ctx = canvas.getContext("2d");
+
+    const spinButton = document.getElementById("spinButton");
+
+    const resultTextOutputs = document.querySelectorAll(".result-text-output");
+
+    const displayTitle = document.getElementById("displayTitle");
+
+    const titleInput = document.getElementById("titleInput");
+
+    const optionList = document.getElementById("optionList");
+
+    const optionCount = document.getElementById("optionCount");
+
+    const resetButton = document.getElementById("resetButton");
+
+    const addOptionButton = document.getElementById("addOptionButton");
+
+    const showAllButton = document.getElementById("showAllButton");
+
+    const hideAllButton = document.getElementById("hideAllButton");
+
+    const controlToggle = document.getElementById("controlToggle");
+
+    const controlPanel = document.getElementById("controlPanel");
+
+    /* =========================================================
+       建立預設項目
+
+       colorIndex 與順序相同。
+    ========================================================= */
+
+    function createDefaultOptions() {
+
+      return DEFAULT_OPTIONS.map(
+        (text, index) => ({
+
+          text: text,
+
+          visible: true,
+
+          colorIndex: index
+
+        })
+      );
+
+    }
+
+    /* =========================================================
+       依順序取得顏色
+    ========================================================= */
+
+    function getOptionColor(
+      optionIndex
+    ) {
+
+      return COLORS[
+        optionIndex %
+        COLORS.length
+      ];
+
+    }
+
+    /* =========================================================
+       取得目前有效的選項
+
+       保留 originalIndex，
+       讓輪盤知道它原本位於第幾個位置，
+       因而取得固定順序顏色。
+    ========================================================= */
+
+    function getActiveOptions() {
+
+      return options
+        .map(
+          (option, index) => ({
+
+            ...option,
+
+            originalIndex:
+              index
+
+          })
+        )
+        .filter(
+          option =>
+
+            option.visible &&
+
+            option.text.trim() !== ""
+
+        );
+
+    }
+
+    /* =========================================================
+       字級計算
+
+       選項增加時逐步縮小字體。
+    ========================================================= */
+
+    function getFontSize(
+      itemCount
+    ) {
+
+      if (
+        itemCount <= 6
+      ) {
+        return 34;
+      }
+
+      if (
+        itemCount <= 8
+      ) {
+        return 30;
+      }
+
+      if (
+        itemCount <= 10
+      ) {
+        return 26;
+      }
+
+      if (
+        itemCount <= 14
+      ) {
+        return 22;
+      }
+
+      if (
+        itemCount <= 20
+      ) {
+        return 18;
+      }
+
+      return 14;
+
+    }
+
+    /* =========================================================
+       繪製輪盤
+    ========================================================= */
+
+    function drawWheel() {
+
+      const activeOptions =
+        getActiveOptions();
+
+      const width =
+        canvas.width;
+
+      const height =
+        canvas.height;
+
+      const centerX =
+        width / 2;
+
+      const centerY =
+        height / 2;
+
+      const radius =
+        Math.min(
+          width,
+          height
+        ) /
+        2 -
+        8;
+
+      ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+      );
+
+      /* -------------------------------------------------------
+         沒有可抽選項目
+      ------------------------------------------------------- */
+
+      if (
+        activeOptions.length === 0
+      ) {
+
+        ctx.beginPath();
+
+        ctx.arc(
+          centerX,
+          centerY,
+          radius,
+          0,
+          Math.PI * 2
+        );
+
+        ctx.fillStyle =
+          "#d1d5db";
+
+        ctx.fill();
+
+        ctx.fillStyle =
+          "#6b7280";
+
+        ctx.font =
+          "600 28px sans-serif";
+
+        ctx.textAlign =
+          "center";
+
+        ctx.textBaseline =
+          "middle";
+
+        ctx.fillText(
+          "請至少顯示一個選項",
+          centerX,
+          centerY - 90
+        );
+
+        updateOptionCount();
+
+        return;
+
+      }
+
+      const sliceAngle =
+        Math.PI *
+        2 /
+        activeOptions.length;
+
+      activeOptions.forEach(
+        (option, wheelIndex) => {
+
+          /* ---------------------------------------------------
+             扇形
+          --------------------------------------------------- */
+
+          const startAngle =
+            rotation +
+            wheelIndex *
+            sliceAngle -
+            Math.PI /
+            2;
+
+          const endAngle =
+            startAngle +
+            sliceAngle;
+
+          ctx.beginPath();
+
+          ctx.moveTo(
+            centerX,
+            centerY
+          );
+
+          ctx.arc(
+            centerX,
+            centerY,
+            radius,
+            startAngle,
+            endAngle
+          );
+
+          ctx.closePath();
+
+          /*
+            重點：
+            顏色依 originalIndex，
+            不依目前顯示後的 wheelIndex。
+          */
+
+          ctx.fillStyle =
+            getOptionColor(
+              option.originalIndex
+            );
+
+          ctx.fill();
+
+          /* 白色分隔線 */
+
+          ctx.strokeStyle =
+            "#ffffff";
+
+          ctx.lineWidth =
+            activeOptions.length > 20
+              ? 2
+              : 4;
+
+          ctx.stroke();
+
+          /* ---------------------------------------------------
+             選項文字
+          --------------------------------------------------- */
+
+          const middleAngle =
+            startAngle +
+            sliceAngle /
+            2;
+
+          const textRadius =
+            radius *
+            0.68;
+
+          const x =
+            centerX +
+            Math.cos(
+              middleAngle
+            ) *
+            textRadius;
+
+          const y =
+            centerY +
+            Math.sin(
+              middleAngle
+            ) *
+            textRadius;
+
+          ctx.save();
+
+          ctx.translate(
+            x,
+            y
+          );
+
+          let textAngle =
+            middleAngle +
+            Math.PI /
+            2;
+
+          /*
+            避免文字倒置
+          */
+
+          const normalized =
+            (
+              (
+                textAngle %
+                (
+                  Math.PI *
+                  2
+                )
+              ) +
+              Math.PI *
+              2
+            ) %
+            (
+              Math.PI *
+              2
+            );
+
+          if (
+            normalized >
+              Math.PI /
+              2 &&
+
+            normalized <
+              Math.PI *
+              1.5
+          ) {
+
+            textAngle +=
+              Math.PI;
+
+          }
+
+          ctx.rotate(
+            textAngle
+          );
+
+          ctx.fillStyle =
+            "#ffffff";
+
+          ctx.font =
+            `700 ${getFontSize(
+              activeOptions.length
+            )}px sans-serif`;
+
+          ctx.textAlign =
+            "center";
+
+          ctx.textBaseline =
+            "middle";
+
+          /* ---------------------------------------------------
+             避免文字超出扇形
+          --------------------------------------------------- */
+
+          let text =
+            option.text.trim();
+
+          const maxWidth =
+            radius *
+            (
+              activeOptions.length <= 8
+                ? 0.48
+                : 0.42
+            );
+
+          while (
+            ctx.measureText(
+              text
+            ).width >
+              maxWidth &&
+
+            text.length >
+              2
+          ) {
+
+            text =
+              text.slice(
+                0,
+                -1
+              );
+
+          }
+
+          if (
+            text !==
+            option.text.trim()
+          ) {
+
+            text =
+              text.slice(
+                0,
+                -1
+              ) +
+              "…";
+
+          }
+
+          ctx.fillText(
+            text,
+            0,
+            0
+          );
+
+          ctx.restore();
+
+        }
+      );
+
+      updateOptionCount();
+
+    }
+
+    /* =========================================================
+       更新選項統計
+    ========================================================= */
+
+    function updateOptionCount() {
+
+      const visible =
+        getActiveOptions()
+          .length;
+
+      optionCount.textContent =
+        `共 ${options.length} 個選項，目前顯示 ${visible} 個`;
+
+    }
+
+    /* =========================================================
+       建立控制面板
+    ========================================================= */
+
+    function renderOptionEditor() {
+
+      optionList.innerHTML =
+        "";
+
+      options.forEach(
+        (option, index) => {
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+          row.className =
+            "option-row";
+
+          /* ---------------------------------------------------
+             顯示 Checkbox
+          --------------------------------------------------- */
+
+          const checkbox =
+            document.createElement(
+              "input"
+            );
+
+          checkbox.type =
+            "checkbox";
+
+          checkbox.checked =
+            option.visible;
+
+          checkbox.title =
+            "顯示或隱藏此選項";
+
+          checkbox.addEventListener(
+            "change",
+            function () {
+
+              if (spinning) {
+
+                checkbox.checked =
+                  option.visible;
+
+                return;
+
+              }
+
+              option.visible =
+                checkbox.checked;
+
+              hideResult();
+
+              drawWheel();
+
+            }
+          );
+
+          /* ---------------------------------------------------
+             顏色標記
+          --------------------------------------------------- */
+
+          const colorDot =
+            document.createElement(
+              "span"
+            );
+
+          colorDot.className =
+            "color-dot";
+
+          colorDot.style.backgroundColor =
+            getOptionColor(
+              index
+            );
+
+          colorDot.title =
+            `第 ${index + 1} 個選項的顏色`;
+
+          /* ---------------------------------------------------
+             文字欄位
+          --------------------------------------------------- */
+
+          const input =
+            document.createElement(
+              "input"
+            );
+
+          input.type =
+            "text";
+
+          input.className =
+            "text-input";
+
+          input.value =
+            option.text;
+
+          input.placeholder =
+            `選項 ${index + 1}`;
+
+          input.setAttribute(
+            "aria-label",
+            `選項 ${index + 1}`
+          );
+
+          input.addEventListener(
+            "input",
+            function () {
+
+              if (spinning) {
+                return;
+              }
+
+              option.text =
+                input.value;
+
+              hideResult();
+
+              drawWheel();
+
+            }
+          );
+
+          /* ---------------------------------------------------
+             刪除按鈕
+          --------------------------------------------------- */
+
+          const deleteButton =
+            document.createElement(
+              "button"
+            );
+
+          deleteButton.type =
+            "button";
+
+          deleteButton.className =
+            "delete-button";
+
+          deleteButton.innerHTML =
+            "&times;";
+
+          deleteButton.title =
+            "刪除此選項";
+
+          deleteButton.setAttribute(
+            "aria-label",
+            `刪除選項 ${index + 1}`
+          );
+
+          deleteButton.addEventListener(
+            "click",
+            function () {
+
+              deleteOption(
+                index
+              );
+
+            }
+          );
+
+          row.appendChild(
+            checkbox
+          );
+
+          row.appendChild(
+            colorDot
+          );
+
+          row.appendChild(
+            input
+          );
+
+          row.appendChild(
+            deleteButton
+          );
+
+          optionList.appendChild(
+            row
+          );
+
+        }
+      );
+
+      updateOptionCount();
+
+      drawWheel();
+
+    }
+
+    /* =========================================================
+       新增選項
+    ========================================================= */
+
+    function addOption() {
+
+      if (spinning) {
+        return;
+      }
+
+      if (
+        options.length >=
+        MAX_OPTIONS
+      ) {
+
+        alert(
+          `最多可設定 ${MAX_OPTIONS} 個選項。`
+        );
+
+        return;
+
+      }
+
+      options.push({
+
+        text:
+          `選項 ${options.length + 1}`,
+
+        visible:
+          true
+
+      });
+
+      hideResult();
+
+      renderOptionEditor();
+
+      /*
+        自動將選項清單捲到最下方
+      */
+
+      requestAnimationFrame(
+        function () {
+
+          optionList.scrollTop =
+            optionList.scrollHeight;
+
+        }
+      );
+
+    }
+
+    /* =========================================================
+       刪除選項
+    ========================================================= */
+
+    function deleteOption(
+      index
+    ) {
+
+      if (spinning) {
+        return;
+      }
+
+      if (
+        options.length <= 1
+      ) {
+
+        alert(
+          "輪盤至少需要保留一個選項。"
+        );
+
+        return;
+
+      }
+
+      options.splice(
+        index,
+        1
+      );
+
+      /*
+        刪除後，
+        後續項目會依新的排列順序重新取得顏色。
+      */
+
+      hideResult();
+
+      renderOptionEditor();
+
+    }
+
+    /* =========================================================
+       新增按鈕
+    ========================================================= */
+
+    addOptionButton.addEventListener(
+      "click",
+      addOption
+    );
+
+    /* =========================================================
+       全部顯示
+    ========================================================= */
+
+    showAllButton.addEventListener(
+      "click",
+      function () {
+
+        if (spinning) {
+          return;
+        }
+
+        options.forEach(
+          option => {
+
+            option.visible =
+              true;
+
+          }
+        );
+
+        hideResult();
+
+        renderOptionEditor();
+
+      }
+    );
+
+    /* =========================================================
+       全部隱藏
+    ========================================================= */
+
+    hideAllButton.addEventListener(
+      "click",
+      function () {
+
+        if (spinning) {
+          return;
+        }
+
+        options.forEach(
+          option => {
+
+            option.visible =
+              false;
+
+          }
+        );
+
+        hideResult();
+
+        renderOptionEditor();
+
+      }
+    );
+
+    /* =========================================================
+       控制面板開關
+    ========================================================= */
+
+    function toggleControlPanel() {
+
+      const isOpen =
+        controlPanel.classList.contains(
+          "open"
+        );
+
+      controlPanel.classList.toggle(
+        "open",
+        !isOpen
+      );
+
+      controlToggle.classList.toggle(
+        "open",
+        !isOpen
+      );
+
+      controlToggle.setAttribute(
+        "aria-expanded",
+        String(!isOpen)
+      );
+
+    }
+
+    controlToggle.addEventListener(
+      "click",
+      toggleControlPanel
+    );
+
+    /* =========================================================
+       標題
+    ========================================================= */
+
+    titleInput.addEventListener(
+      "input",
+      function () {
+
+        const value =
+          titleInput.value.trim();
+
+        displayTitle.textContent =
+          value ||
+          "主題抽選輪盤";
+
+      }
+    );
+
+    /* =========================================================
+       抽選
+    ========================================================= */
+
+    function spin() {
+
+      const activeOptions =
+        getActiveOptions();
+
+      if (
+        spinning ||
+        activeOptions.length === 0
+      ) {
+
+        return;
+
+      }
+
+      spinning =
+        true;
+
+      hideResult();
+
+      spinButton.disabled =
+        true;
+
+      spinButton.textContent =
+        "抽選中…";
+
+      /*
+        先隨機決定得獎項目。
+      */
+
+      const winnerIndex =
+        Math.floor(
+
+          Math.random() *
+
+          activeOptions.length
+
+        );
+
+      const sliceAngle =
+        Math.PI *
+        2 /
+        activeOptions.length;
+
+      /*
+        中選區塊中心。
+      */
+
+      const winnerCenter =
+        winnerIndex *
+        sliceAngle +
+        sliceAngle /
+        2;
+
+      /*
+        額外旋轉 5～8 圈。
+      */
+
+      const turns =
+        5 +
+        Math.floor(
+          Math.random() *
+          4
+        );
+
+      /*
+        停在扇形中央附近，
+        但不固定完全相同的位置。
+      */
+
+      const safeOffset =
+        (
+          Math.random() -
+          0.5
+        ) *
+        sliceAngle *
+        0.5;
+
+      const currentNormalized =
+        normalizeAngle(
+          rotation
+        );
+
+      const desiredNormalized =
+        normalizeAngle(
+
+          -winnerCenter +
+
+          safeOffset
+
+        );
+
+      let difference =
+        desiredNormalized -
+        currentNormalized;
+
+      if (
+        difference < 0
+      ) {
+
+        difference +=
+          Math.PI *
+          2;
+
+      }
+
+      const startRotation =
+        rotation;
+
+      const targetRotation =
+        rotation +
+
+        turns *
+        Math.PI *
+        2 +
+
+        difference;
+
+      /*
+        選項較多時，
+        可稍微延長動畫。
+      */
+
+      const duration =
+        activeOptions.length > 15
+          ? 4700
+          : 4200;
+
+      const startTime =
+        performance.now();
+
+      function animate(
+        now
+      ) {
+
+        const elapsed =
+          now -
+          startTime;
+
+        const progress =
+          Math.min(
+
+            elapsed /
+            duration,
+
+            1
+
+          );
+
+        /*
+          Ease Out Quint
+        */
+
+        const eased =
+          1 -
+
+          Math.pow(
+
+            1 -
+            progress,
+
+            5
+
+          );
+
+        rotation =
+          startRotation +
+
+          (
+            targetRotation -
+            startRotation
+          ) *
+
+          eased;
+
+        drawWheel();
+
+        if (
+          progress <
+          1
+        ) {
+
+          requestAnimationFrame(
+            animate
+          );
+
+        }
+
+        else {
+
+          rotation =
+            targetRotation;
+
+          drawWheel();
+
+          spinning =
+            false;
+
+          spinButton.disabled =
+            false;
+
+          spinButton.textContent =
+            "再次抽選";
+
+          showResult(
+
+            activeOptions[
+              winnerIndex
+            ].text
+
+          );
+
+        }
+
+      }
+
+      requestAnimationFrame(
+        animate
+      );
+
+    }
+
+    /* =========================================================
+       角度標準化
+    ========================================================= */
+
+    function normalizeAngle(
+      angle
+    ) {
+
+      const fullCircle =
+        Math.PI *
+        2;
+
+      return (
+
+        (
+          angle %
+          fullCircle
+        ) +
+
+        fullCircle
+
+      ) %
+
+      fullCircle;
+
+    }
+
+    /* =========================================================
+       結果顯示
+    ========================================================= */
+
+    function showResult(text) {
+      resultTextOutputs.forEach(output => {
+        output.textContent = text;
+      });
+    }
+
+    function hideResult() {
+      resultTextOutputs.forEach(output => {
+        output.textContent = "";
+      });
+    }
+
+    /* =========================================================
+       點擊抽選
+    ========================================================= */
+
+    spinButton.addEventListener(
+      "click",
+      spin
+    );
+
+    canvas.addEventListener(
+      "click",
+      spin
+    );
+
+    /* =========================================================
+       空白鍵抽選
+
+       編輯輸入欄位時，
+       空白鍵仍可正常輸入。
+    ========================================================= */
+
+    document.addEventListener(
+      "keydown",
+      function (
+        event
+      ) {
+
+        if (
+          event.code !==
+          "Space"
+        ) {
+
+          return;
+
+        }
+
+        if (
+          event.repeat
+        ) {
+
+          return;
+
+        }
+
+        const activeElement =
+          document.activeElement;
+
+        const tagName =
+          activeElement
+            ? activeElement.tagName
+            : "";
+
+        if (
+          tagName === "INPUT" ||
+          tagName === "TEXTAREA" ||
+          tagName === "SELECT" ||
+          tagName === "BUTTON"
+        ) {
+
+          return;
+
+        }
+
+        event.preventDefault();
+
+        spin();
+
+      }
+    );
+
+    /* =========================================================
+       恢復預設
+    ========================================================= */
+
+    resetButton.addEventListener(
+      "click",
+      function () {
+
+        if (spinning) {
+          return;
+        }
+
+        options =
+          createDefaultOptions();
+
+        rotation =
+          0;
+
+        titleInput.value =
+          DEFAULT_TITLE;
+
+        displayTitle.textContent =
+          DEFAULT_TITLE;
+
+        spinButton.textContent =
+          "開始抽選";
+
+        hideResult();
+
+        renderOptionEditor();
+
+      }
+    );
+
+    /* =========================================================
+       初始化
+    ========================================================= */
+
+    renderOptionEditor();
+
+    drawWheel();
+
+  </script>
+
+</body>
+</html>
