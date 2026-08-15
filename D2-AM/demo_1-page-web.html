@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>品牌網站課堂範例｜HTML、CSS、JavaScript 關係體驗</title>
+
+  <!-- ==================================================
+       CSS：負責「網站長什麼樣子」
+       ==================================================
+
+       課堂觀察：
+       1. HTML 決定頁面有哪些內容與區塊
+       2. CSS 決定顏色、間距、字體與版面
+       3. 修改 CSS，不需要改 HTML 內容，也能改變外觀
+  -->
+  <style>
+
+    /* ---------- 基本設定 ---------- */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        "Noto Sans TC",
+        "Microsoft JhengHei",
+        sans-serif;
+
+      line-height: 1.7;
+      color: #243044;
+      background: #f4f6f8;
+    }
+
+
+    /* ---------- 導覽列 ---------- */
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+
+      background: #ffffff;
+      border-bottom: 1px solid #dde3ea;
+    }
+
+    .site-nav {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 16px 24px;
+
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .site-nav a {
+      color: #243044;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .site-nav a:hover {
+      color: #1565c0;
+    }
+
+
+    /* ---------- 共用 section ---------- */
+
+    .section {
+      max-width: 1000px;
+      margin: 24px auto;
+      padding: 48px;
+
+      background: #ffffff;
+      border-radius: 16px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #174a7e;
+    }
+
+
+    /* ---------- Hero ---------- */
+
+    .hero {
+      margin-top: 40px;
+      padding-top: 64px;
+      padding-bottom: 64px;
+
+      background: #eaf3ff;
+    }
+
+    .hero-content {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .hero-text {
+      flex: 1;
+    }
+
+    .hero-text h1 {
+      margin-top: 0;
+      margin-bottom: 12px;
+
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.2;
+    }
+
+    .hero-text p {
+      margin: 0 0 28px;
+
+      font-size: 1.15rem;
+    }
+
+    .hero-image {
+      flex: 1;
+    }
+
+    .hero-image img {
+      display: block;
+      width: 100%;
+      height: 320px;
+
+      object-fit: cover;
+      border-radius: 16px;
+    }
+
+
+    /*
+      【學員操作 3：改 CSS】
+
+      可以先嘗試修改：
+
+      background: #eaf3ff;
+      border-radius: 16px;
+
+      例如改成：
+
+      background: #fff3e0;
+      border-radius: 0;
+
+      儲存後重新整理網頁，
+      觀察 Hero 區塊與圖片外觀的變化。
+    */
+
+
+    /* ---------- 按鈕 ---------- */
+
+    .btn {
+      display: inline-block;
+
+      padding: 12px 22px;
+
+      border: 0;
+      border-radius: 8px;
+
+      background: #263238;
+      color: #ffffff;
+
+      text-decoration: none;
+      font: inherit;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+
+    /*
+      【學員操作 4：改按鈕樣式】
+
+      可以嘗試修改：
+
+      background: #263238;
+
+      例如改成：
+
+      background: #1565c0;
+
+      儲存後重新整理網頁，
+      觀察所有 class="btn" 的元素是否一起改變。
+    */
+
+
+    /* ---------- 流程 ---------- */
+
+    .process-list {
+      padding-left: 24px;
+    }
+
+    .process-list li {
+      margin-bottom: 8px;
+    }
+
+
+    /* ---------- FAQ ---------- */
+
+    .faq-item {
+      margin-bottom: 12px;
+      border: 1px solid #dde3ea;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 16px 18px;
+
+      border: 0;
+      background: #f7f9fb;
+
+      text-align: left;
+      font: inherit;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 18px 16px;
+    }
+
+    /*
+      JavaScript 在 FAQ 被點擊時，
+      會幫 .faq-item 加上 class="is-open"。
+
+      所以這裡的意思是：
+      當 faq-item 同時具有 is-open 時，
+      把答案顯示出來。
+    */
+    .faq-item.is-open .faq-answer {
+      display: block;
+    }
+
+
+    /* ---------- 聯絡區 ---------- */
+
+    .contact {
+      text-align: center;
+    }
+
+    .contact-info {
+      margin-top: 20px;
+      font-weight: 700;
+      color: #174a7e;
+    }
+
+
+    /* ---------- 頁尾 ---------- */
+
+    .site-footer {
+      padding: 32px 24px;
+      text-align: center;
+      color: #667085;
+    }
+
+
+    /* ---------- 手機版 ---------- */
+
+    /*
+      當螢幕寬度小於等於 640px，
+      套用以下規則。
+
+      這就是最基本的 Responsive Web Design
+      （響應式網頁設計）概念之一。
+    */
+
+    @media (max-width: 640px) {
+
+      .site-nav {
+        gap: 12px 18px;
+      }
+
+      .section {
+        margin: 16px;
+        padding: 28px 22px;
+      }
+
+      .hero {
+        margin-top: 16px;
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+
+      .hero-content {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .hero-image {
+        width: 100%;
+      }
+
+      .hero-image img {
+        height: 240px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ==================================================
+       HTML：負責「網站有哪些內容與結構」
+       ==================================================
+
+       課堂觀察：
+       - 標題、段落、圖片、按鈕、導覽、區塊都是 HTML
+       - class 通常提供給 CSS 使用
+       - id 可以用來定位區塊，也可以讓 JavaScript 找到元素
+  -->
+
+
+  <!-- ==================================================
+       1. 網站導覽列
+       ================================================== -->
+  <header class="site-header">
+    <nav class="site-nav">
+      <a href="#hero">首頁</a>
+      <a href="#service">服務介紹</a>
+      <a href="#works">案例成果</a>
+      <a href="#faq">常見問題</a>
+      <a href="#contact">聯絡我們</a>
+    </nav>
+  </header>
+
+
+  <main>
+
+    <!-- ==================================================
+         2. Hero：網站第一眼看到的主要區塊
+
+         【學員操作 1：改 HTML 文字】
+
+         請先只修改文字內容，不要改標籤。
+
+         可以修改：
+         - 網站主標題
+         - 一句話價值說明
+         - 按鈕文字
+
+         修改後儲存，再回瀏覽器重新整理。
+         ================================================== -->
+    <section id="hero" class="section hero">
+
+      <div class="hero-content">
+
+        <div class="hero-text">
+          <h1>讓好服務，更容易被看見</h1>
+          <p>用清楚的網站內容，幫助使用者快速理解你的品牌與服務。</p>
+          <a href="#contact" class="btn">立即聯絡</a>
+        </div>
+
+
+        <!-- ==================================================
+             【學員操作 2：把圖片放進網頁】
+
+             img 是 HTML 的圖片元素。
+
+             src：
+             告訴瀏覽器「圖片檔案在哪裡」。
+
+             alt：
+             當圖片無法顯示，或使用螢幕閱讀器時，
+             用文字說明這張圖片的內容。
+
+
+             建議操作：
+
+             1. 準備一張自己的圖片
+             2. 把圖片放到 index.html 相同資料夾
+             3. 將下面的 src 改成圖片檔名
+
+             例如圖片檔叫：
+
+             restaurant.jpg
+
+             就改成：
+
+             <img src="restaurant.jpg" alt="餐廳用餐空間">
+
+
+             今天先把圖片和 HTML 放在同一個資料夾，
+             可以暫時不用處理較複雜的路徑問題。
+
+
+             ※目前 src 使用內嵌示意圖片，
+               所以即使資料夾裡沒有其他圖片，
+               頁面也可以正常顯示。
+             ================================================== -->
+        <div class="hero-image">
+
+          <img
+            src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23dce8f5'/%3E%3Ccircle cx='400' cy='220' r='70' fill='%239bb9d7'/%3E%3Cpath d='M170 500 L330 330 L430 430 L510 350 L650 500 Z' fill='%23799abe'/%3E%3Ctext x='400' y='550' text-anchor='middle' font-family='Arial,sans-serif' font-size='30' fill='%234b6480'%3EHERO IMAGE%3C/text%3E%3C/svg%3E"
+            alt="品牌網站主視覺示意圖"
+          >
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         3. 使用者需求 / 痛點
+         可放入前面 UX 練習整理出的內容。
+         ================================================== -->
+    <section id="problem" class="section">
+      <h2>使用者需求 / 痛點</h2>
+      <p>
+        使用者常常無法快速理解服務內容、差異與下一步該做什麼，
+        因此網站需要提供清楚的資訊層級與行動引導。
+      </p>
+    </section>
+
+
+    <!-- ==================================================
+         4. 服務介紹
+
+         可依分組主題修改為：
+         - 服飾品牌
+         - 餐廳
+         - 診所 / 專業服務
+         - 旅遊景點
+         - 課程招生
+         - 公益 / 社福網站
+         ================================================== -->
+    <section id="service" class="section">
+      <h2>服務 / 產品 / 課程介紹</h2>
+      <p>
+        我們提供適合品牌與產業服務網站的內容規劃，
+        協助使用者快速理解服務特色與價值。
+      </p>
+    </section>
+
+
+    <!-- ==================================================
+         5. 特色亮點
+         ================================================== -->
+    <section id="features" class="section">
+      <h2>特色亮點</h2>
+      <p>
+        清楚的資訊架構、容易理解的文字，以及明確的行動按鈕，
+        能讓網站更容易閱讀與使用。
+      </p>
+    </section>
+
+
+    <!-- ==================================================
+         6. 流程說明
+         可放購買、報名、預約或合作流程。
+         ================================================== -->
+    <section id="process" class="section">
+      <h2>流程說明</h2>
+
+      <ol class="process-list">
+        <li>了解服務內容</li>
+        <li>確認需求與方案</li>
+        <li>聯絡或提出申請</li>
+      </ol>
+    </section>
+
+
+    <!-- ==================================================
+         7. 案例成果
+         ================================================== -->
+    <section id="works" class="section">
+      <h2>案例 / 成果</h2>
+      <p>
+        這裡可以放置作品、案例、成果、客戶回饋或使用者見證。
+      </p>
+    </section>
+
+
+    <!-- ==================================================
+         8. FAQ 常見問題
+
+         button 是 HTML 元素；
+         「點擊後展開答案」則由 JavaScript 控制。
+         ================================================== -->
+    <section id="faq" class="section">
+      <h2>常見問題</h2>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          這個網站適合哪些人？
+        </button>
+
+        <div class="faq-answer">
+          <p>
+            適合希望快速了解服務內容、比較資訊，
+            並進一步聯絡或採取行動的使用者。
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          我要如何開始？
+        </button>
+
+        <div class="faq-answer">
+          <p>
+            可以先閱讀服務介紹與案例，再透過頁面下方的聯絡按鈕採取下一步行動。
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================================================
+         9. 聯絡 / CTA
+         CTA = Call To Action，主要行動呼籲。
+         ================================================== -->
+    <section id="contact" class="section contact">
+      <h2>聯絡 / 報名 / 預約</h2>
+      <p>如果你想進一步了解，請按下方按鈕。</p>
+
+      <!--
+        id="contactButton"
+        讓 JavaScript 可以找到這個按鈕。
+      -->
+      <button id="contactButton" class="btn">
+        顯示聯絡資訊
+      </button>
+
+      <!--
+        hidden 代表一開始先隱藏。
+        JavaScript 會控制它顯示或隱藏。
+      -->
+      <p id="contactInfo" class="contact-info" hidden>
+        聯絡信箱：hello@example.com
+      </p>
+    </section>
+
+  </main>
+
+
+  <!-- ==================================================
+       10. 網站頁尾
+       ================================================== -->
+  <footer class="site-footer">
+    <p>© 2026 品牌網站課堂範例</p>
+  </footer>
+
+
+
+  <!-- ==================================================
+       JavaScript：負責「操作後會發生什麼」
+       ==================================================
+
+       這份範例只做兩件事：
+
+       1. 點 FAQ → 展開 / 收合答案
+       2. 點聯絡按鈕 → 顯示 / 隱藏聯絡資訊
+
+       課堂重點不是記住語法，
+       而是觀察：
+
+       HTML 提供元素
+       → JavaScript 找到元素並改變狀態
+       → CSS 決定狀態如何呈現
+  -->
+  <script>
+
+    // ==================================================
+    // 互動 1：FAQ 展開 / 收合
+    // ==================================================
+
+    // 找出所有 class="faq-question" 的按鈕
+    const faqButtons = document.querySelectorAll(".faq-question");
+
+
+    // 對每一個 FAQ 按鈕設定「點擊事件」
+    faqButtons.forEach(function (button) {
+
+      button.addEventListener("click", function () {
+
+        /*
+          找到這個按鈕所屬的 .faq-item
+        */
+        const faqItem = button.closest(".faq-item");
+
+
+        /*
+          toggle("is-open")：
+
+          原本沒有 is-open → 加上
+          原本有 is-open → 移除
+
+          CSS 中有：
+
+          .faq-item.is-open .faq-answer {
+            display: block;
+          }
+
+          所以 JavaScript 改變 class，
+          CSS 再決定答案如何顯示。
+        */
+        faqItem.classList.toggle("is-open");
+
+      });
+
+    });
+
+
+
+    // ==================================================
+    // 互動 2：顯示 / 隱藏聯絡資訊
+    // ==================================================
+
+    // 用 id 找到 HTML 中的按鈕與文字
+    const contactButton = document.querySelector("#contactButton");
+    const contactInfo = document.querySelector("#contactInfo");
+
+
+    // 當按鈕被點擊時
+    contactButton.addEventListener("click", function () {
+
+      /*
+        hidden 是 HTML 內建的隱藏屬性。
+
+        false → 顯示
+        true  → 隱藏
+
+        下面這行會在 true / false 之間切換。
+      */
+      contactInfo.hidden = !contactInfo.hidden;
+
+
+      /*
+        根據目前狀態，
+        同時改變按鈕文字。
+      */
+      if (contactInfo.hidden) {
+        contactButton.textContent = "顯示聯絡資訊";
+      } else {
+        contactButton.textContent = "隱藏聯絡資訊";
+      }
+
+    });
+
+
+    /*
+      ==================================================
+      【學員操作 5：改 JavaScript】
+
+      找到：
+
+      "顯示聯絡資訊"
+      "隱藏聯絡資訊"
+
+      可以改成：
+
+      "我要聯絡"
+      "收起資訊"
+
+      儲存後重新整理網頁，
+      再點一次按鈕觀察結果。
+
+      這次修改的是 JavaScript，
+      所以改變的是「互動時會發生什麼」。
+      ==================================================
+    */
+
+  </script>
+
+</body>
+</html>
