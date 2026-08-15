@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>產業躍升整合資訊平臺</title>
+  <link rel="shortcut icon" href="/favicon.png">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #3c4650;
+      background: #edf1f4;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .utility {
+      min-width: 1180px;
+      padding: 5px calc((100% - 1120px) / 2);
+      color: #dbe4ea;
+      background: #374955;
+      font-size: 11px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .utility a { margin-left: 13px; color: inherit; text-decoration: none; }
+    .site-header {
+      min-width: 1180px;
+      background: #fff;
+      border-bottom: 1px solid #cbd4da;
+    }
+    .header-inner {
+      width: 1120px;
+      height: 92px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-mark {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: #547484;
+      border-radius: 4px;
+      font-size: 26px;
+      font-weight: bold;
+    }
+    .brand-name { color: #344e5b; font-size: 25px; font-weight: bold; letter-spacing: 2px; }
+    .brand-subtitle { color: #7c8990; font-size: 11px; letter-spacing: 1px; }
+    .header-contact { color: #60717a; font-size: 12px; text-align: right; }
+    .header-contact strong { color: #405b68; font-size: 16px; }
+    .main-nav {
+      min-width: 1180px;
+      color: #fff;
+      background: #496777;
+    }
+    .main-nav ul {
+      width: 1120px;
+      margin: auto;
+      padding: 0;
+      display: flex;
+      list-style: none;
+    }
+    .main-nav li { position: relative; flex: 1; border-right: 1px solid #66808d; }
+    .main-nav li:first-child { border-left: 1px solid #66808d; }
+    .main-nav a {
+      height: 47px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .main-nav li:hover > a { background: #3b5867; }
+    .submenu {
+      position: absolute;
+      z-index: 5;
+      top: 47px;
+      left: 0;
+      width: 220px !important;
+      display: none !important;
+      background: #fff;
+      border: 1px solid #b8c4ca;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+    .main-nav li:hover .submenu { display: block !important; }
+    .submenu li { border: 0 !important; }
+    .submenu a { padding: 8px 12px; display: block; color: #425861; height: auto; }
+    .hero {
+      min-width: 1180px;
+      height: 328px;
+      background:
+        linear-gradient(120deg, transparent 58%, rgba(255,255,255,.11) 58%, rgba(255,255,255,.11) 70%, transparent 70%),
+        radial-gradient(circle at 82% 44%, rgba(255,255,255,.18) 0 7%, transparent 7.2%),
+        linear-gradient(108deg, #203c4a 0%, #496d7c 58%, #78929c 100%);
+    }
+    .hero-inner {
+      width: 1120px;
+      height: 100%;
+      margin: auto;
+      padding-top: 60px;
+      color: #fff;
+    }
+    .hero-kicker { margin: 0 0 8px; font-size: 12px; letter-spacing: 4px; opacity: .8; }
+    .hero h1 { width: 670px; margin: 0; font-size: 37px; line-height: 1.35; letter-spacing: 5px; }
+    .hero p { width: 670px; margin: 18px 0; color: #e8eef1; font-size: 14px; }
+    .hero-button {
+      padding: 8px 22px;
+      display: inline-block;
+      color: #fff;
+      background: #687d87;
+      border: 1px solid rgba(255,255,255,.65);
+      text-decoration: none;
+      font-size: 12px;
+    }
+    main { width: 1120px; margin: 25px auto 50px; }
+    .notice {
+      padding: 13px 17px;
+      display: flex;
+      gap: 20px;
+      background: #fff;
+      border-left: 5px solid #ba8a42;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .notice strong { color: #8a6127; }
+    .notice a { color: #4c6470; text-decoration: none; }
+    .section { margin-top: 25px; padding: 26px; background: #fff; border: 1px solid #d4dde2; }
+    .section h2 {
+      margin: 0 0 18px;
+      padding-bottom: 9px;
+      color: #415d69;
+      border-bottom: 2px solid #657f8b;
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+    .dense-copy { color: #515e64; text-align: justify; }
+    .dense-copy p { margin: 0; }
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 13px; }
+    .card { min-height: 180px; padding: 16px; background: #f5f7f8; border: 1px solid #d6dde0; }
+    .card .code { color: #809099; font-size: 10px; }
+    .card h3 { margin: 6px 0 10px; color: #3f5b67; font-size: 16px; }
+    .card p { margin: 0; font-size: 12px; }
+    .small-link { margin-top: 14px; color: #657781; font-size: 11px; text-decoration: underline; cursor: pointer; }
+    .two-columns { display: grid; grid-template-columns: 1.55fr .8fr; gap: 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+    th, td { padding: 8px 9px; border: 1px solid #b9c5cb; text-align: left; }
+    th { color: #fff; background: #58717d; }
+    td { background: #fafbfb; }
+    .side-panel { padding: 17px; background: #eff3f5; border: 1px solid #cfd9de; }
+    .side-panel h3 { margin: 0 0 10px; color: #405965; }
+    .side-panel ul { margin: 0; padding-left: 19px; font-size: 12px; }
+    .side-panel a { color: #536c77; }
+    .contact-box { padding: 23px; display: flex; justify-content: space-between; align-items: center; background: #536d79; color: #fff; }
+    .contact-box h2 { margin: 0; font-size: 19px; }
+    .contact-box p { margin: 5px 0 0; color: #e0e7ea; font-size: 12px; }
+    .contact-box button {
+      padding: 7px 16px;
+      color: #fff;
+      background: #6f838c;
+      border: 1px solid #cbd5da;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    footer {
+      min-width: 1180px;
+      padding: 32px 0;
+      color: #aebbc1;
+      background: #344852;
+      font-size: 11px;
+    }
+    .footer-inner { width: 1120px; margin: auto; display: flex; justify-content: space-between; }
+    .footer-links a { margin-left: 17px; color: inherit; text-decoration: none; }
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      background: rgba(20,31,37,.55);
+    }
+    .modal-mask.show { display: grid; }
+    .modal {
+      width: 460px;
+      padding: 25px;
+      background: #fff;
+      border-top: 5px solid #58717d;
+      box-shadow: 0 12px 35px rgba(0,0,0,.3);
+    }
+    .modal h3 { margin-top: 0; color: #405965; }
+    .modal p { font-size: 13px; }
+    .modal button { float: right; padding: 5px 13px; }
+    @media (max-width: 600px) {
+      body { font-size: 11px; }
+      /* 此示範刻意保留固定寬度，造成手機瀏覽時必須水平捲動。 */
+      .hero { height: 328px; background-position: 62% center; }
+      .hero h1 { font-size: 31px; }
+      .main-nav a { font-size: 11px; }
+      .card p, .contact-box p, .side-panel ul { font-size: 10px; }
+      .hero-button, .contact-box button { padding: 5px 11px; font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="utility">
+    <a href="#">網站導覽</a><a href="#">相關連結</a><a href="#">資料開放</a><a href="#">English</a><a href="#">登入</a>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div>
+          <div class="brand-name">產業躍升整合資訊平臺</div>
+          <div class="brand-subtitle">INDUSTRIAL INTEGRATION INFORMATION PLATFORM</div>
+        </div>
+      </div>
+      <div class="header-contact">服務專線<br><strong>(04) 2358-0000</strong></div>
+    </div>
+  </header>
+
+  <nav class="main-nav" aria-label="主要導覽">
+    <ul>
+      <li><a href="#">本處簡介</a></li>
+      <li><a href="#">第一業務組</a>
+        <ul class="submenu"><li><a href="#">施政重點</a></li><li><a href="#">業務執掌</a></li><li><a href="#">相關規範</a></li></ul>
+      </li>
+      <li><a href="#">第二業務組</a></li>
+      <li><a href="#">推動辦公室</a></li>
+      <li><a href="#">專案專區</a></li>
+      <li><a href="#">成果彙整</a></li>
+      <li><a href="#">下載專區</a></li>
+      <li><a href="#">其他</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-kicker">INNOVATION・INTEGRATION・PROSPECT</p>
+      <h1>匯聚動能，共創產業新局</h1>
+      <p>鏈結資源、整合量能、擘劃願景，透過跨域協作機制厚植產業韌性，全面驅動創新轉型與永續競爭力。</p>
+      <a class="hero-button" href="#content">瞭解更多</a>
+    </div>
+  </section>
+
+  <main id="content">
+    <div class="notice"><strong>最新消息</strong><a href="#">本平臺配合整體資訊架構調整辦理部分功能移轉作業，相關申請事宜請依最新公告及各該權責單位規定辦理。</a><span>2024/03/18</span></div>
+
+    <section class="section">
+      <h2>政策推動說明</h2>
+      <div class="dense-copy">
+        <p>為因應全球供應鏈重組、淨零轉型與數位經濟發展趨勢，本計畫係依據產業創新條例及整體政策推動綱領，藉由跨部門資源盤點、產業需求鏈結、法人量能協作及區域創新生態系建構，推動企業進行營運模式再造、製程智慧化、服務價值化及治理機制精進。申請單位應依個案屬性、計畫階段、產業別、企業規模、適用要點與經費科目，檢具計畫構想書、資格聲明書、經費配置表及效益評估指標等文件，經形式審查、實質審查及委員會議決議後，始得依核定內容辦理後續作業；如涉跨域整合、技術移轉、資料治理、資通安全或其他法遵事項，另應依各目的事業主管機關之相關規範辦理。</p>
+      </div>
+      <div class="small-link">更多</div>
+    </section>
+
+    <section class="section">
+      <h2>重點業務</h2>
+      <div class="cards">
+        <article class="card"><div class="code">DIVISION 01</div><h3>轉型資源整備</h3><p>整合跨域輔導資源，協助產業掌握關鍵轉型契機，建構具前瞻性與延展性的創新量能。</p><div class="small-link">詳細內容</div></article>
+        <article class="card"><div class="code">DIVISION 02</div><h3>鏈結機制強化</h3><p>透過多元參與及協作架構，促成法人、產業、學研與區域資源之有效對接及綜效擴散。</p><div class="small-link">相關資訊</div></article>
+        <article class="card"><div class="code">DIVISION 03</div><h3>價值驅動方案</h3><p>以需求導向及效益衡量為基礎，推進企業服務創新與營運韌性之系統性提升。</p><div class="small-link">瞭解更多</div></article>
+        <article class="card"><div class="code">DIVISION 04</div><h3>永續治理精進</h3><p>協助組織接軌永續規範、風險治理與資訊揭露要求，完善企業長期競爭優勢。</p><div class="small-link">進入專區</div></article>
+      </div>
+    </section>
+
+    <section class="section two-columns">
+      <div>
+        <h2>申辦資訊彙整</h2>
+        <table>
+          <thead><tr><th>類別</th><th>受理機制</th><th>適用對象</th><th>檢附文件</th><th>作業期程</th><th>權責窗口</th></tr></thead>
+          <tbody>
+            <tr><td>A01</td><td>常態受理</td><td>依法登記之事業</td><td>依要點附件辦理</td><td>視審查結果</td><td>第一組</td></tr>
+            <tr><td>B07</td><td>分梯受理</td><td>符合公告資格者</td><td>計畫書及佐證</td><td>依公告辦理</td><td>第二組</td></tr>
+            <tr><td>C12</td><td>專案提報</td><td>產業聯盟或法人</td><td>合作意向及效益表</td><td>個案通知</td><td>辦公室</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <aside class="side-panel">
+        <h3>常用服務</h3>
+        <ul><li><a href="#">書表下載</a></li><li><a href="#">法規查詢</a></li><li><a href="#">歷年成果</a></li><li><a href="#">相關單位</a></li><li><a href="#">其他資訊</a></li></ul>
+      </aside>
+    </section>
+
+    <section class="contact-box">
+      <div><h2>攜手推動產業創新轉型</h2><p>如需進一步資訊，請透過本平臺聯繫相關業務窗口。</p></div>
+      <button type="button" id="genericAction">點我</button>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>產業躍升整合資訊平臺<br>服務時間：週一至週五 09:00–17:00<br>建議使用最新版瀏覽器，最佳瀏覽解析度 1280 × 768</div>
+      <div class="footer-links"><a href="#">隱私權</a><a href="#">資訊安全</a><a href="#">無障礙說明</a><br><br>© 2022 Industrial Platform</div>
+    </div>
+  </footer>
+
+  <div class="modal-mask" id="modalMask" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">相關資訊</h3>
+      <p>如需瞭解相關內容，請洽相關單位或參閱相關規定辦理。</p>
+      <button type="button" id="closeModal">關閉</button>
+    </div>
+  </div>
+
+  <script>
+    const modalMask = document.getElementById('modalMask');
+    document.getElementById('genericAction').addEventListener('click', () => modalMask.classList.add('show'));
+    document.getElementById('closeModal').addEventListener('click', () => modalMask.classList.remove('show'));
+    modalMask.addEventListener('click', event => {
+      if (event.target === modalMask) modalMask.classList.remove('show');
+    });
+  </script>
+</body>
+</html>
