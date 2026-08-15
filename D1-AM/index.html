@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="D1-AM 使用者體驗課堂示範網頁索引">
+  <title>D1-AM｜課堂示範網頁</title>
+  <link rel="shortcut icon" href="/favicon.png">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --text: #172033;
+      --muted: #667085;
+      --border: #dbe3ee;
+      --surface: #ffffff;
+      --background: #f3f6fa;
+      --shadow: 0 10px 28px rgba(31, 50, 81, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 90% 10%, rgba(37, 99, 235, 0.09), transparent 28rem),
+        var(--background);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; }
+
+    .page {
+      width: min(1080px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 64px 0 72px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--primary);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.3rem);
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+    }
+
+    .intro {
+      max-width: 720px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .notice {
+      margin-top: 28px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      color: #1e429f;
+      background: var(--primary-soft);
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      font-size: 0.94rem;
+    }
+
+    .notice svg { flex: 0 0 auto; margin-top: 3px; }
+
+    .grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      min-height: 224px;
+      padding: 26px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .card::after {
+      width: 116px;
+      height: 116px;
+      content: "";
+      position: absolute;
+      right: -42px;
+      bottom: -48px;
+      background: var(--primary-soft);
+      border-radius: 50%;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: #93b4f5;
+      box-shadow: 0 16px 38px rgba(31, 50, 81, 0.13);
+    }
+
+    .card-number {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--primary);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .card h2 {
+      margin: 18px 0 7px;
+      font-size: 1.32rem;
+      line-height: 1.4;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .card-link {
+      margin-top: auto;
+      padding-top: 22px;
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .card-link::after { content: "→"; transition: transform 160ms ease; }
+    .card-link:hover::after { transform: translateX(4px); }
+
+    .card-link:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 5px;
+      border-radius: 4px;
+    }
+
+    footer {
+      margin-top: 38px;
+      padding-top: 22px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+
+    .reference-section {
+      margin-top: 46px;
+    }
+
+    .reference-heading {
+      max-width: 760px;
+    }
+
+    .section-label {
+      margin: 0 0 6px;
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+    }
+
+    .reference-heading h2 {
+      margin: 0;
+      font-size: clamp(1.55rem, 3vw, 2rem);
+      line-height: 1.35;
+    }
+
+    .reference-heading p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .reference-details {
+      margin-top: 20px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .reference-details summary {
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .reference-details summary:hover {
+      background: var(--primary-soft);
+    }
+
+    .summary-hint {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .reference-table-wrap {
+      overflow-x: auto;
+      border-top: 1px solid var(--border);
+    }
+
+    .reference-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .reference-table th,
+    .reference-table td {
+      padding: 17px 18px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .reference-table thead th {
+      color: #344054;
+      background: #f8fafc;
+      font-size: 0.88rem;
+    }
+
+    .reference-table tbody th {
+      width: 18%;
+      color: var(--text);
+    }
+
+    .reference-table td:nth-child(2) {
+      width: 25%;
+    }
+
+    .reference-table tbody tr:last-child th,
+    .reference-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .reference-table a {
+      color: var(--primary-dark);
+      font-weight: 700;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .reference-table a::after {
+      margin-left: 5px;
+      content: "↗";
+      font-size: 0.8em;
+    }
+
+    @media (max-width: 700px) {
+      .page { width: min(100% - 28px, 560px); padding: 42px 0 48px; }
+      .grid { grid-template-columns: 1fr; gap: 15px; }
+      .card { min-height: 204px; padding: 22px; border-radius: 17px; }
+      .intro { font-size: 1rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, .card-link::after { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <p class="eyebrow">D1-AM｜UX Fundamentals</p>
+      <h1>課堂示範網頁</h1>
+      <p class="intro">請依照課堂引導開啟示範頁面，觀察不同設計方式如何影響資訊理解、操作流程與整體使用者體驗。</p>
+    </header>
+
+    <div class="notice">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 10.5V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="12" cy="7.5" r="1" fill="currentColor"/>
+      </svg>
+      <span>建議依照編號順序操作。部分頁面包含互動效果，請使用最新版 Chrome、Edge 或 Firefox 瀏覽器。</span>
+    </div>
+
+    <section class="grid" aria-label="示範網頁清單">
+      <!-- 可直接修改下方 h2 與 p 的文字，不會影響連結。 -->
+      <article class="card">
+        <div class="card-number">1-1</div>
+        <h2>課堂示範 1-1</h2>
+        <p>開啟第一個互動示範，依照講師引導觀察頁面呈現與操作方式。</p>
+        <a class="card-link" href="demo_1-1.html">開啟示範</a>
+      </article>
+
+      <article class="card">
+        <div class="card-number">1-2</div>
+        <h2>課堂示範 1-2</h2>
+        <p>開啟第二個互動示範，比較不同設計條件對使用者判斷的影響。</p>
+        <a class="card-link" href="demo_1-2.html">開啟示範</a>
+      </article>
+
+      <article class="card">
+        <div class="card-number">1-3</div>
+        <h2>課堂示範 1-3</h2>
+        <p>開啟第三個互動示範，從實際操作中歸納可用性設計原則。</p>
+        <a class="card-link" href="demo_1-3.html">開啟示範</a>
+      </article>
+
+      <article class="card">
+        <div class="card-number">UX</div>
+        <h2>網站常見問題診斷</h2>
+        <p>找出示範網站中的六項常見 UX 問題，並思考可以採取哪些改善方式。</p>
+        <a class="card-link" href="ux-issues.html">開始診斷</a>
+      </article>
+    </section>
+
+    <section class="reference-section" aria-labelledby="reference-title">
+      <div class="reference-heading">
+        <p class="section-label">延伸觀察</p>
+        <h2 id="reference-title">網站常見問題與好做法案例</h2>
+        <p>
+          建議先完成「網站常見問題診斷」，再展開案例，
+          比較真實網站如何協助使用者理解、操作與判斷。
+        </p>
+      </div>
+
+      <details class="reference-details">
+        <summary>
+          <span>展開好做法案例</span>
+          <span class="summary-hint">共 6 項</span>
+        </summary>
+
+        <div class="reference-table-wrap">
+          <table class="reference-table">
+            <thead>
+              <tr>
+                <th scope="col">網站常見問題</th>
+                <th scope="col">好做法案例</th>
+                <th scope="col">課堂觀察重點</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th scope="row" data-label="網站常見問題">首頁定位不清</th>
+                <td data-label="好做法案例">
+                  <a
+                    href="https://www.notion.com/zh-tw"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Notion 繁體中文首頁
+                  </a>
+                </td>
+                <td data-label="課堂觀察重點">
+                  主標題說明使用情境，副標題補充具體用途，並提供一般使用者與企業不同的入口。
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row" data-label="網站常見問題">導覽與分類混亂</th>
+                <td data-label="好做法案例">
+                  <a
+                    href="https://social.judicial.gov.tw/CJlandingpage/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    司法院國民法官制度網站
+                  </a>
+                </td>
+                <td data-label="課堂觀察重點">
+                  以「誰可以當國民法官」「國民法官怎麼選」「要做哪些事」等使用者問題分類，沒有直接沿用法規章節或政府組織架構。
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row" data-label="網站常見問題">文字太正式或太專業</th>
+                <td data-label="好做法案例">
+                  <a
+                    href="https://social.judicial.gov.tw/CJlandingpage/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    司法院國民法官制度網站
+                  </a>
+                </td>
+                <td data-label="課堂觀察重點">
+                  將法律制度轉換成問句、短標題、數字重點與流程圖，例如「三種資格，六種不能」。
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row" data-label="網站常見問題">CTA 不清楚</th>
+                <td data-label="好做法案例">
+                  <a
+                    href="https://www.notion.com/zh-tw"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Notion 繁體中文首頁
+                  </a>
+                </td>
+                <td data-label="課堂觀察重點">
+                  「免費取得 Notion」和「申請產品示範」清楚表達按下後的行動與適用對象。
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row" data-label="網站常見問題">手機版體驗不佳</th>
+                <td data-label="好做法案例">
+                  <a
+                    href="https://www.apple.com/tw/iphone/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Apple 台灣 iPhone 頁面
+                  </a>
+                </td>
+                <td data-label="課堂觀察重點">
+                  比較導覽收合、內容排列、圖片裁切、文字尺寸、橫向滑動元件及按鈕點選範圍。
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row" data-label="網站常見問題">信任感不足</th>
+                <td data-label="好做法案例">
+                  <a
+                    href="https://hahow.in/courses/68f1f3712a7929551ada96b2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Hahow 好學校課程詳細頁
+                  </a>
+                </td>
+                <td data-label="課堂觀察重點">
+                  透過課程大綱、試看影片、講師背景、學員評價、購課前問答與明確價格，累積購買前所需的信任線索。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <footer>D1-AM｜使用者體驗（UX）於產業服務中的核心原則</footer>
+  </main>
+</body>
+</html>
