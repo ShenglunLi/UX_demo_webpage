@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的品牌網站</title>
+
+  <!-- CSS 負責網頁外觀。本階段只修改「學員操作 4」，其餘內容先不用調整。 -->
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: "Microsoft JhengHei", sans-serif; line-height: 1.7; color: #243044; background: #f4f6f8; }
+    header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 16px max(24px, calc((100% - 1000px) / 2)); background: #fff; border-bottom: 1px solid #dde3ea; }
+    header > a { color: #174a7e; font-size: 1.2rem; font-weight: bold; text-decoration: none; white-space: nowrap; }
+    nav { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
+    nav a { color: #243044; text-decoration: none; }
+    section { max-width: 1000px; margin: 24px auto; padding: 48px; background: #fff; border-radius: 16px; }
+    .hero { display: flex; align-items: center; gap: 48px; margin-top: 40px; }
+    .hero-text, .hero-image { flex: 1; }
+    h1 { margin: 0 0 12px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.2; }
+    h2 { margin-top: 0; color: #174a7e; }
+    .hero-image img { display: block; width: 100%; height: 320px; object-fit: cover; border-radius: 12px; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { padding: 24px; background: #f7f9fb; border: 1px solid #dde3ea; border-radius: 12px; }
+    .card h3 { margin-top: 0; }
+    details { padding: 16px 0; border-bottom: 1px solid #dde3ea; }
+    summary { font-weight: bold; cursor: pointer; }
+    .btn { display: inline-block; padding: 12px 22px; border: 0; border-radius: 8px; color: #fff; font: inherit; font-weight: bold; text-decoration: none; cursor: pointer; }
+    .btn:hover { opacity: .85; }
+    #contact { text-align: center; }
+    #contactInfo { font-weight: bold; color: #174a7e; }
+    footer { padding: 32px 24px; text-align: center; color: #667085; }
+
+    /* ===== [學員操作 4] 調整網站顏色 =====
+       只修改下列三個 # 色碼，儲存後回到瀏覽器觀察變化。
+       可嘗試：#1565c0（藍）、#fff3e0（淺橘）、#243044（深灰）。 */
+    .hero { background: #eaf3ff; } /* Hero 背景顏色 */
+    .hero h1 { color: #243044; }   /* H1 主標題顏色 */
+    .btn { background: #263238; }  /* CTA 按鈕顏色 */
+
+    @media (max-width: 640px) {
+      header { align-items: flex-start; gap: 12px; }
+      nav { gap: 10px 14px; }
+      section { margin: 16px; padding: 28px 22px; }
+      .hero { flex-direction: column; align-items: stretch; }
+      .hero-image img { height: 240px; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== [學員操作 1] 設定網站基本資料 =====
+       1. 修改瀏覽器分頁中的 title。
+       2. 將「網站名稱」改成品牌、店家或專案名稱。
+       3. 導覽文字可修改，但 href 必須對應各 section 的 id。 -->
+  <header>
+    <a href="#hero">網站名稱</a>
+    <nav>
+      <a href="#hero">首頁</a>
+      <a href="#audience">適合對象</a>
+      <a href="#services">服務內容</a>
+      <a href="#faq">常見問題</a>
+      <a href="#contact">聯絡報名</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===== [學員操作 2] 完成 Hero =====
+         1. 修改 H1、說明文字與 CTA 文字。
+         2. 將圖片放在 HTML 的相同資料夾，再修改 img 的 src。
+         3. alt 請用一句簡短文字描述圖片內容。 -->
+    <section id="hero" class="hero">
+      <div class="hero-text">
+        <h1>讓好服務，<br>更容易被看見</h1>
+        <p>用清楚的網站內容，幫助使用者快速理解你的品牌與服務。</p>
+        <a class="btn" href="#contact">立即聯絡</a>
+      </div>
+      <div class="hero-image">
+        <img src="https://placehold.co/800x600/dce8f5/4b6480?text=HERO+IMAGE" alt="品牌網站主視覺示意圖">
+      </div>
+    </section>
+
+    <!-- ===== [學員操作 3] 嘗試填入各 Section 的內容 =====
+         依序修改適合對象、服務內容、FAQ 與聯絡資訊。
+         先修改現有文字即可；若需要更多項目，可複製完整的 card 或 details。 -->
+    <section id="audience">
+      <h2>適合對象</h2>
+      <p>這項服務適合哪些人？請描述他們的需求、目標或遇到的問題。</p>
+      <ul>
+        <li>希望快速了解服務內容的人</li>
+        <li>正在比較不同方案的人</li>
+        <li>準備採取下一步行動的人</li>
+      </ul>
+    </section>
+
+    <section id="services">
+      <h2>服務內容</h2>
+      <div class="cards">
+        <article class="card"><h3>服務項目一</h3><p>簡要說明服務內容與特色。</p></article>
+        <article class="card"><h3>服務項目二</h3><p>簡要說明服務內容與特色。</p></article>
+        <article class="card"><h3>服務項目三</h3><p>簡要說明服務內容與特色。</p></article>
+      </div>
+    </section>
+
+
+    <section id="faq">
+      <h2>常見問題</h2>
+      <details><summary>這項服務適合哪些人？</summary><p>在這裡填入問題的回答。</p></details>
+      <details><summary>服務流程需要多久？</summary><p>在這裡填入問題的回答。</p></details>
+      <details><summary>我要如何開始？</summary><p>在這裡填入問題的回答。</p></details>
+    </section>
+
+    <section id="contact">
+      <h2>聯絡或報名</h2>
+      <p>想進一步了解服務內容，歡迎按下按鈕查看聯絡方式。</p>
+      <button id="contactButton" class="btn">顯示聯絡資訊</button>
+      <p id="contactInfo" hidden>聯絡信箱：hello@example.com</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 網站名稱 All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript 負責聯絡按鈕的互動，本階段先觀察效果，不需修改。 -->
+  <script>
+    const button = document.querySelector("#contactButton");
+    const info = document.querySelector("#contactInfo");
+    button.addEventListener("click", function () {
+      info.hidden = !info.hidden;
+      button.textContent = info.hidden ? "顯示聯絡資訊" : "隱藏聯絡資訊";
+    });
+  </script>
+</body>
+</html>
