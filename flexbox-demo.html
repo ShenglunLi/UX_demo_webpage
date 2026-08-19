@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flexbox 互動觀察</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans TC", sans-serif;
+      color: #263238;
+      background: #f5f7fa;
+      line-height: 1.6;
+    }
+
+    button,
+    select,
+    input {
+      font: inherit;
+    }
+
+    .app-header {
+      padding: 28px 24px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #dbe3ec;
+    }
+
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.25;
+      color: #1f3a5f;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 0;
+      color: #52616b;
+    }
+
+    .layout {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .panel,
+    .stage-panel,
+    .code-panel {
+      background: #ffffff;
+      border: 1px solid #dbe3ec;
+      border-radius: 8px;
+    }
+
+    .panel {
+      padding: 18px;
+      align-self: start;
+      position: sticky;
+      top: 16px;
+    }
+
+    .panel h2,
+    .stage-panel h2,
+    .code-panel h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      color: #1f3a5f;
+    }
+
+    .control {
+      margin-bottom: 16px;
+    }
+
+    .control label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: #31495f;
+    }
+
+    .hint {
+      margin: -2px 0 8px;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .control select,
+    .control input[type="range"] {
+      width: 100%;
+    }
+
+    .control select {
+      min-height: 40px;
+      padding: 8px 10px;
+      color: #263238;
+      background: #ffffff;
+      border: 1px solid #b8c5d1;
+      border-radius: 6px;
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 52px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .value {
+      text-align: right;
+      color: #52616b;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+
+    .toggle-row input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .reset-button {
+      width: 100%;
+      min-height: 42px;
+      border: 0;
+      border-radius: 6px;
+      color: #ffffff;
+      background: #1f3a5f;
+      cursor: pointer;
+    }
+
+    .reset-button:hover {
+      background: #17304f;
+    }
+
+    .main-area {
+      min-width: 0;
+      display: grid;
+      gap: 18px;
+    }
+
+    .stage-panel {
+      padding: 18px;
+    }
+
+    .axis-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: #52616b;
+      font-size: 14px;
+    }
+
+    .axis-pill {
+      padding: 4px 10px;
+      background: #eef4f8;
+      border: 1px solid #dbe3ec;
+      border-radius: 999px;
+    }
+
+    .demo-container {
+      min-height: 360px;
+      padding: 18px;
+      display: flex;
+      gap: 24px;
+      justify-content: flex-start;
+      align-items: stretch;
+      flex-wrap: nowrap;
+      background:
+        linear-gradient(90deg, rgba(31, 58, 95, 0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(31, 58, 95, 0.08) 1px, transparent 1px),
+        #f8fafc;
+      background-size: 32px 32px;
+      border: 2px dashed #9aaabd;
+      border-radius: 8px;
+      overflow: auto;
+      transition: min-height 0.2s ease;
+    }
+
+    .demo-item {
+      min-width: 112px;
+      min-height: 76px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 8px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+    }
+
+    .demo-item:nth-child(1) {
+      background: #1f77b4;
+    }
+
+    .demo-item:nth-child(2) {
+      background: #0f766e;
+    }
+
+    .demo-item:nth-child(3) {
+      background: #b45309;
+    }
+
+    .demo-item:nth-child(4) {
+      background: #7c3aed;
+    }
+
+    .demo-item:nth-child(5) {
+      background: #be123c;
+    }
+
+    .demo-item:nth-child(6) {
+      background: #2563eb;
+    }
+
+    .demo-item:nth-child(7) {
+      background: #4d7c0f;
+    }
+
+    .demo-item:nth-child(8) {
+      background: #a21caf;
+    }
+
+    .code-panel {
+      padding: 18px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 16px;
+      overflow: auto;
+      color: #d9e8ff;
+      background: #1f2937;
+      border-radius: 8px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .checklist {
+      margin: 14px 0 0;
+      padding-left: 20px;
+      color: #435160;
+    }
+
+    @media (max-width: 860px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <h1>Flexbox 互動觀察</h1>
+      <p class="lead">調整左側控制項，觀察外層容器如何排列裡面的項目。右下方會同步顯示目前對應的 CSS。</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel" aria-label="Flexbox 控制項">
+      <h2>控制項</h2>
+
+      <div class="control">
+        <label for="direction">flex-direction</label>
+        <p class="hint">決定項目排列的方向，也會改變主軸方向。</p>
+        <select id="direction">
+          <option value="row">row：由左到右</option>
+          <option value="row-reverse">row-reverse：由右到左</option>
+          <option value="column">column：由上到下</option>
+          <option value="column-reverse">column-reverse：由下到上</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="justify">justify-content</label>
+        <p class="hint">控制項目在主軸上的位置與分散方式。</p>
+        <select id="justify">
+          <option value="flex-start">flex-start：靠主軸起點</option>
+          <option value="center">center：集中在中間</option>
+          <option value="flex-end">flex-end：靠主軸終點</option>
+          <option value="space-between">space-between：兩端貼齊，中間平均分散</option>
+          <option value="space-around">space-around：每個項目左右保留空間</option>
+          <option value="space-evenly">space-evenly：所有空間平均分配</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="align">align-items</label>
+        <p class="hint">控制項目在交叉軸上的對齊方式。</p>
+        <select id="align">
+          <option value="stretch">stretch：撐滿交叉軸可用空間</option>
+          <option value="flex-start">flex-start：靠交叉軸起點</option>
+          <option value="center">center：交叉軸置中</option>
+          <option value="flex-end">flex-end：靠交叉軸終點</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="wrap">flex-wrap</label>
+        <p class="hint">控制項目放不下時，是否換到下一行。</p>
+        <select id="wrap">
+          <option value="nowrap">nowrap：不換行，可能超出容器</option>
+          <option value="wrap">wrap：放不下就換行</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="gap">gap</label>
+        <p class="hint">控制項目和項目之間的距離。</p>
+        <div class="range-row">
+          <input id="gap" type="range" min="0" max="56" step="4" value="24">
+          <span class="value" id="gapValue">24px</span>
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="height">容器高度</label>
+        <p class="hint">改變外層容器高度，方便觀察垂直方向的對齊。</p>
+        <div class="range-row">
+          <input id="height" type="range" min="220" max="520" step="20" value="360">
+          <span class="value" id="heightValue">360px</span>
+        </div>
+      </div>
+
+      <div class="control">
+        <label for="count">項目數量</label>
+        <p class="hint">增加項目後，更容易觀察換行與分散效果。</p>
+        <div class="range-row">
+          <input id="count" type="range" min="3" max="8" step="1" value="4">
+          <span class="value" id="countValue">4</span>
+        </div>
+      </div>
+
+      <label class="toggle-row">
+        <input id="equalWidth" type="checkbox">
+        <span>讓項目使用 <code>flex: 1</code>，平均分配可用寬度</span>
+      </label>
+
+      <button class="reset-button" id="resetButton" type="button">重設</button>
+    </aside>
+
+    <section class="main-area">
+      <section class="stage-panel" aria-label="Flexbox 預覽">
+        <h2>預覽區</h2>
+        <div class="axis-note">
+          <span class="axis-pill" id="mainAxis">主軸：水平</span>
+          <span class="axis-pill" id="crossAxis">交叉軸：垂直</span>
+        </div>
+        <div class="demo-container" id="demoContainer"></div>
+      </section>
+
+      <section class="code-panel" aria-label="目前 CSS">
+        <h2>目前 CSS</h2>
+        <pre><code id="cssOutput"></code></pre>
+        <ul class="checklist">
+          <li><code>justify-content</code> 主要觀察主軸上的排列。</li>
+          <li><code>align-items</code> 主要觀察交叉軸上的對齊。</li>
+          <li>把 <code>flex-direction</code> 改成 <code>column</code> 後，主軸方向也會改變。</li>
+        </ul>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const controls = {
+      direction: document.querySelector("#direction"),
+      justify: document.querySelector("#justify"),
+      align: document.querySelector("#align"),
+      wrap: document.querySelector("#wrap"),
+      gap: document.querySelector("#gap"),
+      height: document.querySelector("#height"),
+      count: document.querySelector("#count"),
+      equalWidth: document.querySelector("#equalWidth")
+    };
+
+    const demoContainer = document.querySelector("#demoContainer");
+    const cssOutput = document.querySelector("#cssOutput");
+    const gapValue = document.querySelector("#gapValue");
+    const heightValue = document.querySelector("#heightValue");
+    const countValue = document.querySelector("#countValue");
+    const mainAxis = document.querySelector("#mainAxis");
+    const crossAxis = document.querySelector("#crossAxis");
+    const resetButton = document.querySelector("#resetButton");
+
+    const defaults = {
+      direction: "row",
+      justify: "flex-start",
+      align: "stretch",
+      wrap: "nowrap",
+      gap: "24",
+      height: "360",
+      count: "4",
+      equalWidth: false
+    };
+
+    function createItems(count) {
+      demoContainer.innerHTML = "";
+
+      for (let index = 1; index <= count; index += 1) {
+        const item = document.createElement("div");
+        item.className = "demo-item";
+        item.textContent = `項目 ${index}`;
+        demoContainer.appendChild(item);
+      }
+    }
+
+    function updateAxisLabels(direction) {
+      const isColumn = direction.includes("column");
+      mainAxis.textContent = isColumn ? "主軸：垂直" : "主軸：水平";
+      crossAxis.textContent = isColumn ? "交叉軸：水平" : "交叉軸：垂直";
+    }
+
+    function updateDemo() {
+      const direction = controls.direction.value;
+      const justify = controls.justify.value;
+      const align = controls.align.value;
+      const wrap = controls.wrap.value;
+      const gap = controls.gap.value;
+      const height = controls.height.value;
+      const count = Number(controls.count.value);
+      const equalWidth = controls.equalWidth.checked;
+
+      createItems(count);
+
+      demoContainer.style.flexDirection = direction;
+      demoContainer.style.justifyContent = justify;
+      demoContainer.style.alignItems = align;
+      demoContainer.style.flexWrap = wrap;
+      demoContainer.style.gap = `${gap}px`;
+      demoContainer.style.minHeight = `${height}px`;
+
+      document.querySelectorAll(".demo-item").forEach((item) => {
+        item.style.flex = equalWidth ? "1" : "0 0 auto";
+      });
+
+      gapValue.textContent = `${gap}px`;
+      heightValue.textContent = `${height}px`;
+      countValue.textContent = String(count);
+      updateAxisLabels(direction);
+
+      cssOutput.textContent = `.container {
+  display: flex;
+  flex-direction: ${direction};
+  justify-content: ${justify};
+  align-items: ${align};
+  flex-wrap: ${wrap};
+  gap: ${gap}px;
+}
+
+.item {
+  flex: ${equalWidth ? "1" : "0 0 auto"};
+}`;
+    }
+
+    function resetDemo() {
+      controls.direction.value = defaults.direction;
+      controls.justify.value = defaults.justify;
+      controls.align.value = defaults.align;
+      controls.wrap.value = defaults.wrap;
+      controls.gap.value = defaults.gap;
+      controls.height.value = defaults.height;
+      controls.count.value = defaults.count;
+      controls.equalWidth.checked = defaults.equalWidth;
+      updateDemo();
+    }
+
+    Object.values(controls).forEach((control) => {
+      control.addEventListener("input", updateDemo);
+      control.addEventListener("change", updateDemo);
+    });
+
+    resetButton.addEventListener("click", resetDemo);
+
+    updateDemo();
+  </script>
+</body>
+</html>
